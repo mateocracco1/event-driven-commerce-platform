@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  mysql:
+    image: 'mysql:8.0.33'
+    container_name: mysql-pp2
+    environment:
+      - 'MYSQL_DATABASE=ppdb'
+      - 'MYSQL_ROOT_PASSWORD=***REMOVED_DB_PASSWORD***'
+    ports:
+      - '3306:3306'
