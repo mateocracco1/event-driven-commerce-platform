@@ -57,8 +57,10 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll() // Endpoints de Login/Registro libres
-                                .requestMatchers("/api/test/**").permitAll()   // Para pruebas iniciales
-                                .anyRequest().authenticated()                  // El resto requiere JWT
+                                .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
+                                .anyRequest().authenticated()
+                                                // El resto requiere JWT
                 );
 
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
