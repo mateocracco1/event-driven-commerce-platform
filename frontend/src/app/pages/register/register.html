@@ -1,0 +1,84 @@
+<div class="auth-page-wrapper">
+  <div  class="login-container">
+  <mat-card appearance="raised">
+    <mat-card-header>
+      <div mat-card-avatar class="login-icon">
+        <mat-icon color="primary">person_add</mat-icon>
+      </div>
+      <mat-card-title>Crear Cuenta</mat-card-title>
+      <mat-card-subtitle>Completá tus datos para registrarte</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="login-form">
+        
+     <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name">
+          @if (registerForm.get('name')?.hasError('required') && registerForm.get('name')?.touched) {
+            <mat-error>El nombre es <strong>obligatorio</strong></mat-error>
+          }
+      </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Apellido</mat-label>
+          <input matInput formControlName="lastName" placeholder="Tu apellido">
+            @if (registerForm.get('lastName')?.hasError('required') && registerForm.get('lastName')?.touched) {
+            <mat-error>El apellido es <strong>obligatorio</strong></mat-error>
+          }
+        
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Correo Electrónico</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input matInput formControlName="email" type="email">
+            @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+              <mat-error>
+                @if (registerForm.get('email')?.errors?.['required']) {
+                  El correo es <strong>obligatorio</strong>.
+                } @else if (registerForm.get('email')?.errors?.['email']) {
+                  Ingresá un correo <strong>válido</strong>.
+                }
+              </mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" type="password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" type="button">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+              @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                <mat-error>
+                  La contraseña debe tener al menos <strong>6 caracteres</strong>.
+                </mat-error>
+              }
+          </mat-form-field>
+
+     <button mat-flat-button color="primary" type="submit" 
+        [disabled]="registerForm.invalid || isLoading" class="login-button">
+  
+          @if (isLoading) {
+            <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+            <span>PROCESANDO...</span>
+          } @else {
+            <ng-container>
+              <mat-icon>how_to_reg</mat-icon>
+              <span>REGISTRARME</span>
+            </ng-container>
+          }
+
+      </button>
+
+        <div class="form-footer">
+            <span>¿Ya tenés cuenta? </span>
+            <a routerLink="/login">Iniciá sesión</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="container mt-4">
+  <h1>Catálogo de Productos</h1>
+  <p>Bienvenid@</p>
+  
+  <div class="product-grid">
+    @for (item of [1,2,3,4]; track item) {
+      <mat-card class="product-card">
+        <mat-card-header>
+          <mat-card-title>Producto {{item}}</mat-card-title>
+        </mat-card-header>
+        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Producto">
+        <mat-card-content>
+          <p>Descripción  del producto.........</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary">VER DETALLE</button>
+          <button mat-raised-button color="accent">COMPRAR</button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+</div>

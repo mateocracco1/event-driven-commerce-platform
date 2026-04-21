@@ -1,0 +1,33 @@
+<mat-toolbar class="mat-elevation-z4">
+  <span routerLink="/home" class="brand" style="cursor: pointer">HOME</span>
+  
+  <span class="spacer"></span>
+
+  <div class="nav-actions">
+    @if (!isLoggedIn) {
+      <button mat-button class="btn-login" routerLink="/login">INICIAR SESIÓN</button>
+      <button mat-flat-button class="btn-register" routerLink="/register">REGISTRARSE</button>
+    } @else {
+      
+      <span class="user-name" (click)="profileService.open()" style="cursor: pointer">
+        Hola, <strong>{{ userName }}</strong>
+      </span>
+      
+      <button mat-icon-button [matMenuTriggerFor]="menu" class="user-button">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="profileService.open()">
+          <mat-icon>person</mat-icon>
+          <span>Mi Perfil</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Cerrar Sesión</span>
+        </button>
+      </mat-menu>
+    }
+  </div>
+</mat-toolbar>
