@@ -1,0 +1,54 @@
+@if (profileService.isOpen()) {
+  
+  <div class="drawer-overlay" (click)="closeDrawer()"></div>
+
+  <div class="drawer-container">
+    
+    <div class="drawer-header">
+      <h2>Mi Perfil</h2>
+      <button type="button" class="btn-close" (click)="closeDrawer()">×</button>
+    </div>
+
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text" 
+               formControlName="nombre" 
+               [readonly]="!isEditing" 
+               [class.editing]="isEditing"
+               class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label>Apellido</label>
+        <input type="text" 
+               formControlName="apellido" 
+               [readonly]="!isEditing"
+               [class.editing]="isEditing" 
+               class="form-control">
+      </div>
+
+      <div class="actions">
+        @if (!isEditing) {
+          <button type="button" (click)="toggleEdit()" class="btn-edit">
+            Editar Perfil
+          </button>
+        } @else {
+          <button type="submit" [disabled]="profileForm.invalid" class="btn-save">
+            Guardar Cambios
+          </button>
+          <button type="button" (click)="toggleEdit()" class="btn-cancel">
+            Cancelar
+          </button>
+        }
+      </div>
+
+    </form>
+  </div>
+}

@@ -1,0 +1,159 @@
+// Colores base para combinar con Material
+$primary: #3f51b5; // El azul clásico de Material
+$success: #4caf50;
+$danger: #f44336;
+$text-main: #333;
+$text-muted: #666;
+$bg-drawer: #ffffff;
+
+// Overlay (el fondo oscuro)
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  //backdrop-filter: blur(2px); // Desenfoque pro
+  z-index: 2000; // Por encima del nav
+}
+
+// Contenedor del Panel
+.drawer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background: $bg-drawer;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  z-index: 2001;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out; // Animación de entrada
+
+  .drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 16px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: $text-main;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      color: $text-muted;
+      &:hover { color: black; }
+    }
+  }
+}
+
+// Estilo de los campos
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $primary;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px 0; // Sin padding lateral cuando es readonly
+    font-size: 1.1rem;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #ddd; // Línea sutil estilo Material
+    background: transparent;
+    color: $text-main;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+    }
+
+    // Cuando activamos la edición
+    &.editing {
+      padding: 10px;
+      background: #fcfcfc;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 2px rgba($primary, 0.1);
+      }
+    }
+
+    // El email siempre se ve igual (bloqueado)
+    &[formControlName="email"] {
+      color: $text-muted;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Botones
+.actions {
+  margin-top: auto; // Los tira abajo de todo
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  button {
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: filter 0.2s;
+
+    &:disabled {
+      background: #ccc !important;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.9);
+    }
+  }
+
+  .btn-edit {
+    background: $primary;
+    color: white;
+    border: none;
+  }
+
+  .btn-save {
+    background: $success;
+    color: white;
+    border: none;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    color: $danger;
+    border: 1px solid $danger;
+  }
+}
+
+// Animación simple
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}

@@ -1,0 +1,39 @@
+.login-container {
+ 
+  width: 100%;
+  max-width: 450px;
+  display: block; 
+}
+
+
+mat-card {
+  
+  background-color: white !important; 
+  border-radius: 12px;
+}
+.login-icon {
+  background-color: rgba(63, 81, 181, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  padding: 8px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.login-button {
+  margin-top: 16px;
+  padding: 24px 0;
+  font-size: 1.1rem;
+  border-radius: 8px;
+}

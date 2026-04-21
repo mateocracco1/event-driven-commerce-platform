@@ -1,0 +1,80 @@
+mat-toolbar {
+  background-color: var(--mat-sys-primary) !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  padding: 0 24px; // Un poco más de aire a los costados
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estilo del HOME */
+.brand {
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+/* Texto de Bienvenida */
+.user-name {
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-right: 4px;
+  strong { font-weight: 600; }
+}
+
+/* Botón del Círculo de Usuario */
+.user-button {
+  color: white !important;
+  mat-icon {
+    transform: scale(1.2); // Que se vea un poquito más grande
+  }
+}
+
+/* Botón INICIAR SESIÓN */
+.btn-login {
+  color: white !important;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+/* Botón REGISTRARSE (El que resalta) */
+.btn-register {
+  background-color: white !important;
+  color: var(--mat-sys-primary) !important; // Usa el azul del nav para el texto
+  font-weight: bold;
+  border-radius: 25px; // Forma de cápsula
+  padding: 0 20px;
+  
+  &:hover {
+    background-color: #f0f0f0 !important;
+  }
+}
+
+.nav-user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer; // Clave para que parezca un botón
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05); // Un sutil gris al pasar el mouse
+  }
+
+  .user-greeting {
+    font-weight: 500;
+  }
+}
