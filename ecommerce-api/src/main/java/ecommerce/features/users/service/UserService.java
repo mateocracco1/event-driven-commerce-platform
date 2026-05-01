@@ -81,6 +81,18 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public UserDto updateProfileByEmail(String email, UserUpdateDto updateDto) {
+        // 1. Buscás al usuario por el email (que es único)
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        user.setName(updateDto.getName());
+        user.setLastName(updateDto.getLastName());
+
+        return userManagementMapper.toDto(userRepository.save(user));
+    }
+
+
     @Transactional(readOnly = true)
     private User findUserOrThrow(Long userId) {
         return userRepository.findById(userId)
