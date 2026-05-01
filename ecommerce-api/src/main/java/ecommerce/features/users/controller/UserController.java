@@ -22,6 +22,7 @@ public class UserController {
 
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserDto> getMyProfile(Authentication authentication) {
         String email = authentication.getName();
         return ResponseEntity.ok(userService.findByEmail(email));
@@ -41,11 +42,20 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or #id == principal.id")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDto updateDto) {
         return ResponseEntity.ok(userService.updateUserProfile(id, updateDto));
     }
+
+    @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDto> updateMyProfile(Authentication authentication, @Valid @RequestBody UserUpdateDto updateDto) {
+        return ResponseEntity.ok(userService.updateProfileByEmail(authentication.getName(), updateDto));
+    }
+
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -54,6 +64,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+
+
+    //falta este
     @PatchMapping("/me/password")
     public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody PasswordUpdateDto passwordDto) {
 
