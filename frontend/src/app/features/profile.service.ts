@@ -1,4 +1,6 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -6,6 +8,10 @@ import { Injectable, signal } from '@angular/core';
 export class ProfileService {
   // Usamos una Signal (lo más moderno de Angular) para manejar el estado
   isOpen = signal<boolean>(false);
+  private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8080/api/users';
+
+
 
   toggle() {
     this.isOpen.update(value => !value);
@@ -18,4 +24,16 @@ export class ProfileService {
   close() {
     this.isOpen.set(false);
   }
+
+  getMyProfile(): Observable<any> {
+  
+    return this.http.get(`${this.apiUrl}/me`, { withCredentials: true });
+  }
+
+  updateMyProfile(userData: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/me`, userData, { withCredentials: true });
+  }
+
+
+
 }
