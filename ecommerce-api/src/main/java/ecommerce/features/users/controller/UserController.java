@@ -68,6 +68,7 @@ public class UserController {
 
     //falta este
     @PatchMapping("/me/password")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> changePassword(Authentication authentication, @Valid @RequestBody PasswordUpdateDto passwordDto) {
 
         userService.updatePassword(authentication.getName(), passwordDto);

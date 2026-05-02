@@ -34,6 +34,14 @@ export class ProfileService {
     return this.http.put(`${this.apiUrl}/me`, userData, { withCredentials: true });
   }
 
+// En profile.service.ts
 
+/**
+ * Envía la petición para actualizar la contraseña del usuario autenticado.
+ * @param passwordData Objeto con { currentPassword, newPassword, confirmPassword }
+ */
+updatePassword(passwordData: any): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/me/password`, passwordData, { withCredentials: true });
+}
 
 }

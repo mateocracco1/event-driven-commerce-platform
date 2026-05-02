@@ -1,14 +1,14 @@
 @if (profileService.isOpen()) {
-  
-  <div class="drawer-overlay" (click)="closeDrawer()"></div>
+<div class="drawer-overlay" (click)="closeDrawer()"></div>
 
-  <div class="drawer-container">
-    
-    <div class="drawer-header">
-      <h2>Mi Perfil</h2>
-      <button type="button" class="btn-close" (click)="closeDrawer()">×</button>
-    </div>
+<div class="drawer-container">
+  <div class="drawer-header">
+    <h2>{{ isChangingPassword ? 'Seguridad' : 'Mi Perfil' }}</h2>
+    <button type="button" class="btn-close" (click)="closeDrawer()">×</button>
+  </div>
 
+  @if (!isChangingPassword) {
+    <!-- VISTA PERFIL (RESTAURADA) -->
     <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
       
       <div class="form-group">
@@ -36,19 +36,66 @@
 
       <div class="actions">
         @if (!isEditing) {
-          <button type="button" (click)="toggleEdit()" class="btn-edit">
-            Editar Perfil
-          </button>
+          <button type="button" (click)="toggleEdit()" class="btn-edit">Editar Datos</button>
+          <button type="button" (click)="togglePasswordView()" class="btn-link">Cambiar Contraseña</button>
         } @else {
-          <button type="submit" [disabled]="profileForm.invalid" class="btn-save">
-            Guardar Cambios
+          <button type="submit" [disabled]="profileForm.invalid" class="btn-save">Guardar Cambios</button>
+          <button type="button" (click)="toggleEdit()" class="btn-cancel">Cancelar</button>
+        }
+      </div>
+    </form>
+  } @else {
+    <!-- VISTA CAMBIO CONTRASEÑA (Material Style) -->
+    <div class="password-view-header">
+      <button type="button" (click)="togglePasswordView()" class="btn-back-material">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Volver al Perfil</span>
+      </button>
+      <h3>Seguridad de la cuenta</h3>
+    </div>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="savePassword()" class="password-form">
+      
+      <div class="form-group">
+        <label>Contraseña Actual</label>
+        <div class="input-wrapper-material">
+          <input [type]="showCurrent ? 'text' : 'password'" formControlName="currentPassword" class="form-control editing">
+          <button type="button" class="btn-eye-material" (click)="togglePasswordVisibility('current')">
+            <mat-icon>{{ showCurrent ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
-          <button type="button" (click)="toggleEdit()" class="btn-cancel">
-            Cancelar
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Nueva Contraseña</label>
+        <div class="input-wrapper-material">
+          <input [type]="showNew ? 'text' : 'password'" formControlName="newPassword" class="form-control editing">
+          <button type="button" class="btn-eye-material" (click)="togglePasswordVisibility('new')">
+            <mat-icon>{{ showNew ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
+        </div>
+        @if (passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.errors?.['minlength']) {
+          <small class="error-msg">Mínimo 8 caracteres</small>
         }
       </div>
 
+      <div class="form-group">
+        <label>Confirmar Nueva Contraseña</label>
+        <div class="input-wrapper-material">
+          <input [type]="showConfirm ? 'text' : 'password'" formControlName="confirmPassword" class="form-control editing">
+          <button type="button" class="btn-eye-material" (click)="togglePasswordVisibility('confirm')">
+            <mat-icon>{{ showConfirm ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+        </div>
+        @if (passwordForm.get('confirmPassword')?.touched && passwordForm.hasError('mismatch')) {
+          <small class="error-msg">Las contraseñas no coinciden</small>
+        }
+      </div>
+
+      <button type="submit" [disabled]="passwordForm.invalid" class="btn-save-full">
+        Actualizar Contraseña
+      </button>
     </form>
-  </div>
+  }
+</div>
 }
