@@ -40,6 +40,17 @@ export class AuthService {
   }
 
 
+  // ¿Olvidaste la pww?
+ 
+forgotPassword(email: string): Observable<string> {
+  // Pasamos el email como un objeto que coincida con tu ForgotPasswordRequest DTO
+  return this.http.post(`${this.apiUrl}/forgot-password`, { email }, { responseType: 'text' });
+}
+
+resetPassword(data: any): Observable<string> {
+  // data debe contener { token, newPassword }
+  return this.http.post(`${this.apiUrl}/reset-password`, data, { responseType: 'text' });
+}
   
 
 
