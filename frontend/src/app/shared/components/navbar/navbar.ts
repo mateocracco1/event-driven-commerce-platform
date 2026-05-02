@@ -5,9 +5,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { AuthService } from '../../services/auth';
 import { MatDividerModule } from '@angular/material/divider';
-import { ProfileService } from '../../features/profile.service';
+import { ProfileService } from '../../../features/profile/profile-drawer/profile.service';
+import { AuthService } from '../../../services/auth';
 
 
 @Component({

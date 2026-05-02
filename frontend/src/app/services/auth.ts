@@ -12,25 +12,34 @@ export class AuthService {
   // Guardamos el estado en memoria
   private authenticated = false;
 
-  login(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signin`, credentials, {
-      withCredentials: true 
-    }).pipe(
-      tap((res : any) => {
-    localStorage.setItem('logged', 'true');
-    localStorage.setItem('userName', res.name); // Guardamos el nombre que viene del Java
-  })
-      
-    );
-  }
+login(credentials: any): Observable<any> {
+  return this.http.post(`${this.apiUrl}/signin`, credentials, {
+    withCredentials: true 
+  }).pipe(
+    tap((res: any) => {
+      localStorage.setItem('logged', 'true');
+      localStorage.setItem('userName', res.name);
+      // GUARDAMOS LOS ROLES (Suponiendo que el back manda un array ['ROLE_ADMIN'])
+      localStorage.setItem('roles', JSON.stringify(res.roles)); 
+    })
+  );
+}
+
+hasRole(role: string): boolean {
+  const rolesRaw = localStorage.getItem('roles');
+  if (!rolesRaw) return false;
+  
+  const roles: string[] = JSON.parse(rolesRaw);
+  return roles.includes(role);
+}
+
 
   isLoggedIn(): boolean {
     return localStorage.getItem('logged') === 'true';
   }
 
   logout() {
-    localStorage.removeItem('logged');
-    localStorage.removeItem('userName');
+    localStorage.clear();
   }
 
 
