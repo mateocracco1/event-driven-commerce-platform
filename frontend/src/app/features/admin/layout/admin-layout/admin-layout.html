@@ -1,0 +1,25 @@
+<div class="admin-container">
+  <!-- Sidebar Lateral -->
+  <aside class="admin-sidebar">
+    <div class="logo">Backoffice</div>
+    <nav>
+      <a routerLink="users" routerLinkActive="active">
+        <mat-icon>people</mat-icon> Usuarios
+      </a>
+      <!-- Aquí agregarás Productos, Reportes, etc. en el futuro -->
+    </nav>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <span>Panel de Control</span>
+      <button (click)="logout()">Salir</button>
+    </header>
+    
+    <section class="admin-content">
+      <!-- AQUÍ se cargarán las rutas hijas (UserList, etc) -->
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

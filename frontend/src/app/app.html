@@ -1,4 +1,12 @@
-<app-navbar></app-navbar>
-<app-profile-drawer></app-profile-drawer>
+<!-- Si la URL NO contiene 'admin', mostramos la interfaz de cliente -->
+@if (!router.url.includes('/admin')) {
+  <app-navbar></app-navbar>
+}
 
+<!-- El outlet es sagrado, aquí se carga TODO (Home o AdminLayout) -->
 <router-outlet></router-outlet>
+
+<!-- Lo mismo para el drawer del perfil -->
+@if (!router.url.includes('/admin')) {
+  <app-profile-drawer></app-profile-drawer>
+}

@@ -1,7 +1,7 @@
 import { Component, OnInit, effect, inject } from '@angular/core'; 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ProfileService } from '../../profile.service';
+import { ProfileService } from './profile.service';
 import { MatIconModule } from "@angular/material/icon";
 
 @Component({

@@ -41,11 +41,22 @@ export class LoginComponent {
       // 1. Llamamos al método del servicio
       // 2. Nos SUSCRIBIMOS (aquí se dispara la petición)
       this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log('¡Respuesta del Back!', response);
-          // Si el login es correcto, navegamos al home
-          this.router.navigate(['/home']);
-        },
+       next: (response) => {
+              console.log('¡Respuesta del Back!', response);
+              
+              // Guardamos el nombre para el perfil como ya hacías
+              localStorage.setItem('userName', response.name);
+
+              // 1. Verificamos los roles. 
+              // Ojo: Ajusta 'ROLE_ADMIN' según cómo lo devuelva tu backend (puede ser 'ADMIN', 'ROLE_ADMIN', etc.)
+              const isAdmin = response.roles && response.roles.includes('ROLE_ADMIN');
+
+              if (isAdmin) {
+                this.router.navigate(['/admin']);
+              } else {
+                this.router.navigate(['/home']);
+              }
+            },
         error: (err) => {
           console.error('Error al iniciar sesión:', err);
           // Aquí podrías poner un mensaje de "Usuario o clave incorrectos"
