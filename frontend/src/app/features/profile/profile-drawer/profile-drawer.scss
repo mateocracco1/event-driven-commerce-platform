@@ -1,12 +1,13 @@
-// Colores base para combinar con Material
-$primary: #3f51b5; // El azul clásico de Material
+// 1. VARIABLES
+$primary: #3f51b5;
 $success: #4caf50;
 $danger: #f44336;
 $text-main: #333;
 $text-muted: #666;
 $bg-drawer: #ffffff;
+$border-color: #eee;
 
-// Overlay (el fondo oscuro)
+// 2. ESTRUCTURA DEL DRAWER
 .drawer-overlay {
   position: fixed;
   top: 0;
@@ -14,11 +15,9 @@ $bg-drawer: #ffffff;
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  //backdrop-filter: blur(2px); // Desenfoque pro
-  z-index: 2000; // Por encima del nav
+  z-index: 2000;
 }
 
-// Contenedor del Panel
 .drawer-container {
   position: fixed;
   top: 0;
@@ -32,14 +31,14 @@ $bg-drawer: #ffffff;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.3s ease-out; // Animación de entrada
+  animation: slideIn 0.3s ease-out;
 
   .drawer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 32px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid $border-color;
     padding-bottom: 16px;
 
     h2 {
@@ -60,7 +59,7 @@ $bg-drawer: #ffffff;
   }
 }
 
-// Estilo de los campos
+// 3. FORMULARIOS Y CAMPOS
 .form-group {
   margin-bottom: 20px;
 
@@ -75,32 +74,24 @@ $bg-drawer: #ffffff;
 
   .form-control {
     width: 100%;
-    padding: 10px 0; // Sin padding lateral cuando es readonly
+    padding: 10px 0;
     font-size: 1.1rem;
     border: 1px solid transparent;
-    border-bottom: 1px solid #ddd; // Línea sutil estilo Material
+    border-bottom: 1px solid #ddd;
     background: transparent;
     color: $text-main;
     transition: all 0.2s ease;
 
-    &:focus {
-      outline: none;
-    }
+    &:focus { outline: none; }
 
-    // Cuando activamos la edición
     &.editing {
       padding: 10px;
       background: #fcfcfc;
       border: 1px solid #ccc;
       border-radius: 4px;
-      
-      &:focus {
-        border-color: $primary;
-        box-shadow: 0 0 0 2px rgba($primary, 0.1);
-      }
+      &:focus { border-color: $primary; }
     }
 
-    // El email siempre se ve igual (bloqueado)
     &[formControlName="email"] {
       color: $text-muted;
       cursor: not-allowed;
@@ -108,9 +99,75 @@ $bg-drawer: #ffffff;
   }
 }
 
-// Botones
+// 4. VISTA DE CONTRASEÑA (ESPECÍFICO)
+.password-view-header {
+  margin-bottom: 30px; // Más margen inferior para separar de los inputs
+  border-bottom: 1px solid $border-color;
+  padding-bottom: 12px;
+
+  .btn-back-material {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    padding: 8px 0;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+
+    mat-icon { font-size: 20px; width: 20px; height: 20px; }
+    &:hover { 
+      color: $primary; 
+      transform: translateX(-4px);
+    }
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: $text-main;
+    font-weight: 600;
+  }
+}
+
+.input-wrapper-material {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-control {
+    padding-right: 45px !important; // Espacio para el ojito
+    &.editing { padding-left: 10px; }
+  }
+
+  .btn-eye-material {
+    position: absolute;
+    right: 5px;
+    background: none;
+    border: none;
+    color: $text-muted;
+    cursor: pointer;
+    display: flex;
+    padding: 8px;
+    border-radius: 50%;
+    &:hover { background-color: rgba(0, 0, 0, 0.05); }
+    mat-icon { font-size: 22px; }
+  }
+}
+
+.error-msg {
+  color: $danger;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  display: block;
+}
+
+// 5. BOTONES DE ACCIÓN
 .actions {
-  margin-top: auto; // Los tira abajo de todo
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -121,38 +178,28 @@ $bg-drawer: #ffffff;
     font-weight: 600;
     cursor: pointer;
     text-transform: uppercase;
-    transition: filter 0.2s;
+    transition: all 0.2s;
 
     &:disabled {
       background: #ccc !important;
       cursor: not-allowed;
     }
-
-    &:hover:not(:disabled) {
-      filter: brightness(0.9);
-    }
   }
 
-  .btn-edit {
-    background: $primary;
-    color: white;
-    border: none;
-  }
-
-  .btn-save {
-    background: $success;
-    color: white;
-    border: none;
-  }
-
-  .btn-cancel {
-    background: transparent;
-    color: $danger;
-    border: 1px solid $danger;
-  }
+  .btn-edit { background: $primary; color: white; border: none; }
+  .btn-save, .btn-save-full { background: $success; color: white; border: none; }
+  .btn-cancel { background: transparent; color: $danger; border: 1px solid $danger; }
+  .btn-link { background: transparent; color: $primary; border: 1px solid $primary; }
 }
 
-// Animación simple
+// Estilo específico para el botón largo de la password
+.btn-save-full {
+  width: 100%;
+  margin-top: 10px;
+  &:hover:not(:disabled) { filter: brightness(0.9); }
+}
+
+// 6. ANIMACIONES
 @keyframes slideIn {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
