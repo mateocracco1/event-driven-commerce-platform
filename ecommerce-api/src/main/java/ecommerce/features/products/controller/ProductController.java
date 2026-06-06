@@ -58,4 +58,13 @@ public class ProductController {
         productService.reactivateProduct(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponse>> searchProducts(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "asc") String priceOrder) {
+
+        return ResponseEntity.ok(productService.searchProducts(query, categoryId, priceOrder));
+    }
 }
