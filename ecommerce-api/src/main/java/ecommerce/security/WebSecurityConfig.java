@@ -64,6 +64,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll() // Endpoints de Login/Registro libres
                                 .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers("/api/v1/resellers/register").permitAll() // <-- AGREGÁ ESTA LÍNEA
+                                .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
                                 .anyRequest().authenticated()
                                                 // El resto requiere JWT

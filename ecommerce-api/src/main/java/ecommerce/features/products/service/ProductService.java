@@ -2,8 +2,9 @@ package ecommerce.features.products.service;
 
 import ecommerce.core.domain.Category;
 import ecommerce.core.domain.Product;
-import ecommerce.core.repository.CategoryRepository;
-import ecommerce.core.repository.ProductRepository;
+import ecommerce.features.category.repository.CategoryRepository;
+import ecommerce.features.products.dto.ProductUpdateDTO;
+import ecommerce.features.products.repository.ProductRepository;
 import ecommerce.features.products.dto.ProductRequest;
 import ecommerce.features.products.dto.ProductResponse;
 import ecommerce.features.products.mapper.ProductMapper;
@@ -28,17 +29,17 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll().stream().map(productMapper::toResponse).toList();
+        return productRepository.findByActiveTrue().stream().map(productMapper::toResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public ProductResponse getProductById(Long id) {
-        return productMapper.toResponse(findProductOrThrow(id));
+        return productMapper.toResponse(findProductActiveOrThrow(id));
     }
 
-    @Transactional
-    public ProductResponse updateProduct(Long id, ProductRequest dto) {
-        Product product = findProductOrThrow(id);
+
+    public ProductResponse updateProduct(Long id, ProductUpdateDTO dto) {
+        Product product = findProductActiveOrThrow(id);
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
         productMapper.updateProductFromDto(dto, product);
@@ -55,18 +56,28 @@ public class ProductService {
         return productMapper.toResponse(productRepository.save(product));
     }
 
+
     @Transactional
-    public void deleteProductById(Long id) {
-        Product product = findProductOrThrow(id);
-        productRepository.delete(product);
+    public void softDeleteProduct(Long id) {
+        Product product = findProductActiveOrThrow(id);
+        product.setActive(false);
+        productRepository.save(product);
     }
 
-    private Product findProductOrThrow(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + productId));
+    @Transactional
+    public void reactivateProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+        if (product.isActive()) {
+            throw new RuntimeException("El producto ya está activo");
+        }
+        product.setActive(true);
+        productRepository.save(product);
     }
 
-
-
+    private Product findProductActiveOrThrow(Long productId) {
+        return productRepository.findByIdAndActiveTrue(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado o inactivo con ID: " + productId));
+    }
 
 }

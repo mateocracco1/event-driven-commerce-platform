@@ -15,14 +15,15 @@ public interface ProductMapper {
     @Mapping(source = "category.name", target = "categoryName")
     ProductResponse toResponse(Product product);
 
-    // (Entrada)
-    @Mapping(target = "id", ignore = true)
+    // (Entrada - Creación)
+    // (Entrada - Actualización, sin code)
+    @Mapping(target = "code", ignore = true)
     @Mapping(target = "category", ignore = true)
     Product toEntity(ProductRequest request);
 
     //  ACTUALIZAR
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    void updateProductFromDto(ProductRequest request, @MappingTarget Product product);
+    void updateProductFromDto(ProductUpdateDTO request, @MappingTarget Product product);
 }
 

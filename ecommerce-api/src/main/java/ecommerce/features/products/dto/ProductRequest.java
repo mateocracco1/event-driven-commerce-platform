@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 public class ProductRequest {
 
     @NotBlank(message = "El nombre es obligatorio")
+    private String code;
+
+    @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 3, max = 100)
     private String name;
 
