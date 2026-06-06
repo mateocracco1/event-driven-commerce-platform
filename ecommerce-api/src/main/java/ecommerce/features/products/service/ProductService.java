@@ -3,11 +3,14 @@ package ecommerce.features.products.service;
 import ecommerce.core.domain.Category;
 import ecommerce.core.domain.Product;
 import ecommerce.features.category.repository.CategoryRepository;
+import ecommerce.features.products.ProductSpecifications;
 import ecommerce.features.products.dto.ProductUpdateDTO;
 import ecommerce.features.products.repository.ProductRepository;
 import ecommerce.features.products.dto.ProductRequest;
 import ecommerce.features.products.dto.ProductResponse;
 import ecommerce.features.products.mapper.ProductMapper;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -80,4 +83,20 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado o inactivo con ID: " + productId));
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductResponse> searchProducts(String search, Long categoryId, String direction) {
+        // 1. Configurar el orden dinámico por el campo "price"
+        Sort sort = Sort.by(Sort.Direction.ASC, "price"); // Por defecto menor precio
+        if ("desc".equalsIgnoreCase(direction)) {
+            sort = Sort.by(Sort.Direction.DESC, "price"); // Mayor precio
+        }
+
+        // 2. Combinar las especificaciones dinámicas
+        Specification<Product> spec = ProductSpecifications.filterProducts(search, categoryId);
+
+        // 3. Ejecutar la consulta en la base de datos con filtros y orden, pero sin paginar
+        return productRepository.findAll(spec, sort).stream()
+                .map(productMapper::toResponse)
+                .toList();
+    }
 }
