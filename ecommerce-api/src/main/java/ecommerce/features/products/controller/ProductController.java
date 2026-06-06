@@ -2,6 +2,7 @@ package ecommerce.features.products.controller;
 
 import ecommerce.features.products.dto.ProductRequest;
 import ecommerce.features.products.dto.ProductResponse;
+import ecommerce.features.products.dto.ProductUpdateDTO;
 import ecommerce.features.products.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -40,14 +41,21 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateDTO request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProductById(id);
+    public ResponseEntity<Void> softDeleteProduct(@PathVariable Long id) {
+        productService.softDeleteProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> activateProduct(@PathVariable Long id) {
+        productService.reactivateProduct(id);
+        return ResponseEntity.ok().build();
     }
 }
