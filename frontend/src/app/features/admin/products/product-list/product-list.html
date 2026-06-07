@@ -3,6 +3,37 @@
   <button class="btn-add" (click)="openCreateForm()">Nuevo Producto</button>
 </div>
 
+  <div class="filters-wrapper">
+  <div class="filter-group search-box">
+    <mat-icon>search</mat-icon>
+    <input 
+      type="text" 
+      placeholder="Buscar por nombre o código..." 
+      [value]="filterQuery()"
+      (input)="onQueryChange($event)">
+  </div>
+
+  <div class="filter-group">
+    <label>Categoría:</label>
+    <select [value]="filterCategory()" (change)="onCategoryChange($event)">
+      <option value="">Todas las categorías</option>
+      @for (cat of categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Precio:</label>
+    <select [value]="filterOrder()" (change)="onOrderChange($event)">
+      <option value="asc">Menor a Mayor ↑</option>
+      <option value="desc">Mayor a Menor ↓</option>
+    </select>
+  </div>
+  
+  <button class="btn-clear" (click)="clearFilters()">Limpiar</button>
+</div>
+
 <div class="table-container">
   <table class="admin-table">
     <thead>
@@ -22,13 +53,23 @@
             <td>{{ prod.name }}</td>
             <td>${{ prod.price }}</td>
             <td>
-            <span class="badge" [class.low-stock]="prod.lowStock">
-                {{ prod.stock }} u.
-            </span>
+              <div class="stock-container">
+                @if (prod.lowStock) {
+                  <mat-icon class="alert-icon" title="¡Alerta! Stock por debajo del mínimo">error</mat-icon>
+                }
+                <span class="stock-badge" [class.is-low]="prod.lowStock">
+                  {{ prod.stock }} u.
+                </span>
+              </div>
             </td>
             <td>{{ prod.categoryName }}</td>
             <td class="actions">
-            <button class="btn-edit" (click)="openEditForm(prod)">
+            
+              <button class="btn-inventory" (click)="openStockForm(prod)" title="Ajustar Stock">
+                <mat-icon>inventory</mat-icon>
+              </button>
+            
+              <button class="btn-edit" (click)="openEditForm(prod)">
                 <mat-icon>edit</mat-icon>
             </button>
             <button class="btn-delete" (click)="deleteProduct(prod.id!)">
@@ -55,6 +96,18 @@
         (onClose)="closeForm()"
         (onSave)="onProductSaved()">
       </app-product-form>
+    </div>
+  </div>
+}
+
+@if (showStockForm()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-stock-adjustment-form
+        [product]="selectedProduct()"
+        (onClose)="closeStockForm()"
+        (onSave)="onStockSaved()">
+      </app-stock-adjustment-form>
     </div>
   </div>
 }

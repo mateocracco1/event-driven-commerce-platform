@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product, Category } from '../../../core/models/product.model';
+import { HttpParams } from '@angular/common/http'; 
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ export class AdminService {
   private apiUrl = 'http://localhost:8080/api/users';
   private productApiUrl = 'http://localhost:8080/api/products'; 
   private categoryApiUrl = 'http://localhost:8080/api/categories';
+  private inventoryApiUrl = 'http://localhost:8080/api/inventory';
 
 
   // Obtener todos los usuarios (Solo para ADMIN)
@@ -45,6 +47,12 @@ export class AdminService {
     return this.http.get<Category[]>(this.categoryApiUrl, { withCredentials: true });
   }
 
+  // === GESTIÓN DE INVENTARIO ===
+  adjustStock(productId: number, quantity: number, reason: string): Observable<void> {
+    const body = { productId, quantity, reason };
+    return this.http.post<void>(`${this.inventoryApiUrl}/adjustment`, body, { withCredentials: true });
+  }
+  
   // === GESTIÓN DE CATEGORÍAS ===
 
   createCategory(category: Category): Observable<Category> {
@@ -58,5 +66,20 @@ export class AdminService {
   deleteCategory(id: number): Observable<void> {
     return this.http.delete<void>(`${this.categoryApiUrl}/${id}`, { withCredentials: true });
   }
+
+  //filtros
+
+  searchProducts(query?: string, categoryId?: number | string, priceOrder: string = 'asc'): Observable<Product[]> {
+    let params = new HttpParams();
+    
+    if (query) params = params.set('query', query);
+    if (categoryId) params = params.set('categoryId', categoryId.toString());
+    if (priceOrder) params = params.set('priceOrder', priceOrder);
+
+    return this.http.get<Product[]>(`${this.productApiUrl}/search`, { params, withCredentials: true });
+}
+
+
+
 
 }

@@ -26,6 +26,11 @@ export class ProductFormComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.loadCategoriesAndPatch();
+  
+    // Si estamos editando, deshabilitamos el campo stock para que usen el flujo de inventario
+    if (this.productToEdit) {
+      this.productForm.get('stock')?.disable();
+    }
   }
 
   // Inicializamos el formulario con las validaciones requeridas
@@ -37,6 +42,7 @@ export class ProductFormComponent implements OnInit {
       description: ['', [Validators.required]],
       price: [0, [Validators.required, Validators.min(0.01)]],
       stock: [0, [Validators.required, Validators.min(0)]],
+      minStock: [5, [Validators.required, Validators.min(0)]], // 
       categoryId: ['', [Validators.required]]
     });
   }
