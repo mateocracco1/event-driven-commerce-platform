@@ -78,16 +78,17 @@ export class ProductFormComponent implements OnInit {
       return;
     }
 
-    const productData: Product = this.productForm.value;
+// En vez de: const productData: Product = this.productForm.value;
+    const productData: Product = this.productForm.getRawValue(); // <-- Trae el stock deshabilitado!
 
-    // Evaluamos el modo según la presencia del producto a editar y su ID
-    if (this.productToEdit && this.productToEdit.id) {
+
+   if (this.productToEdit && this.productToEdit.id) {
       
       // --- MODO MODIFICACIÓN (PUT) ---
       this.adminService.updateProduct(this.productToEdit.id, productData).subscribe({
         next: () => {
           alert('Producto modificado correctamente');
-          this.onSave.emit(); // Avisa al padre que refresque la tabla y cierre el modal
+          this.onSave.emit();
         },
         error: (err) => {
           console.error('Error al modificar el producto:', err);
@@ -96,12 +97,11 @@ export class ProductFormComponent implements OnInit {
       });
 
     } else {
-      
       // --- MODO CREACIÓN (POST) ---
       this.adminService.createProduct(productData).subscribe({
         next: () => {
           alert('Producto creado correctamente');
-          this.onSave.emit(); // Avisa al padre que refresque la lista
+          this.onSave.emit();
         },
         error: (err) => {
           console.error('Error al guardar el producto:', err);
@@ -110,6 +110,7 @@ export class ProductFormComponent implements OnInit {
       });
     }
   }
+  
 
   // Al presionar el botón Cancelar
   cancel(): void {
