@@ -1,0 +1,71 @@
+<div class="form-container">
+  <h2>{{ productToEdit ? 'Modificar Producto' : 'Crear Nuevo Producto' }}</h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="code">Código del Producto</label>
+      <input id="code" type="text" formControlName="code" placeholder="Ej: PROD-1025">
+      @if (productForm.get('code')?.touched && productForm.get('code')?.invalid) {
+        <small class="error">El código es obligatorio (mínimo 3 caracteres).</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="name">Nombre</label>
+      <input id="name" type="text" formControlName="name" placeholder="Ej: Monitor 24 pulgadas">
+      @if (productForm.get('name')?.touched && productForm.get('name')?.invalid) {
+        <small class="error">El nombre es obligatorio.</small>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="description">Descripción</label>
+      <textarea id="description" formControlName="description" rows="3" placeholder="Detalles del producto..."></textarea>
+      @if (productForm.get('description')?.touched && productForm.get('description')?.invalid) {
+        <small class="error">La descripción es obligatoria.</small>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="price">Precio ($)</label>
+        <input id="price" type="number" formControlName="price" step="0.01">
+        @if (productForm.get('price')?.touched && productForm.get('price')?.invalid) {
+          <small class="error">Debe ser mayor a 0.</small>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock Inicial</label>
+        <input id="stock" type="number" formControlName="stock">
+        @if (productForm.get('stock')?.touched && productForm.get('stock')?.invalid) {
+          <small class="error">No puede ser negativo.</small>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="categoryId">Categoría Asociada</label>
+      <select id="categoryId" formControlName="categoryId">
+        <option value="" disabled selected>Selecciona una categoría</option>
+        @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+      @if (productForm.get('categoryId')?.touched && productForm.get('categoryId')?.invalid) {
+        <small class="error">Debes asociar una categoría.</small>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add" [disabled]="productForm.invalid">
+        {{ productToEdit ? 'Guardar Cambios' : 'Crear Producto' }}
+      </button>
+      <button type="button" class="btn-delete" (click)="cancel()">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>
