@@ -26,12 +26,6 @@
   }
 }
 
-.table-container {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  background: white;
-}
-
 .admin-table {
   width: 100%;
   border-collapse: collapse;
@@ -48,24 +42,40 @@
   td {
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
-    vertical-align: middle; // Fuerza a que todas las celdas de la tabla se centren verticalmente
+    vertical-align: middle; // Fuerza el centrado en todas las celdas comunes
   }
 
+  // === SECCIÓN ACTIONS CORREGIDA ===
   .actions {
-    display: flex;
-    gap: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 32px; // Alineación matemática con el alto del stock-container
+    line-height: 1;
 
     button {
       border: none;
       background: none;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      line-height: 1;
       transition: opacity 0.2s;
 
       &:hover {
         opacity: 0.7;
+      }
+      
+      mat-icon {
+        font-size: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        line-height: 20px !important;
+        display: block;
       }
     }
 
@@ -81,7 +91,6 @@
     font-style: italic;
   }
 }
-
 // === PANEL DE FILTROS ===
 .filters-wrapper {
   display: flex;
