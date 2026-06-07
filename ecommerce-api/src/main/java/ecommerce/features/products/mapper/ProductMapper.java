@@ -13,6 +13,7 @@ public interface ProductMapper {
 
     // (Salida)
     @Mapping(source = "category.name", target = "categoryName")
+    @Mapping(target = "lowStock", expression = "java(product.getStock() <= product.getMinStock())") // Lo calcula al vuelo!
     ProductResponse toResponse(Product product);
 
     // (Entrada - Creación)

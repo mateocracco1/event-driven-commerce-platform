@@ -15,4 +15,7 @@ public class ProductResponse {
     private String description;
     private BigDecimal price;
     private String categoryName;
+    private String imageUrl;
+    private int minStock;
+    private boolean lowStock; // <--- Clave para el Front
 }

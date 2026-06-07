@@ -1,7 +1,6 @@
-package ecommerce.features.inventory;
+package ecommerce.features.inventory.domain;
 
 import ecommerce.core.domain.Product;
-import ecommerce.features.inventory.domain.StockMovementReason;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
