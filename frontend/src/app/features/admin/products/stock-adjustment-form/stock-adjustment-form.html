@@ -1,0 +1,28 @@
+<div class="form-container">
+  <h2>Ajustar Stock: {{ product?.name }}</h2>
+  <p>Stock Actual: <strong>{{ product?.stock }} u.</strong></p>
+
+  <form [formGroup]="stockForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="quantity">Cantidad a Ajustar</label>
+      <input id="quantity" type="number" formControlName="quantity" placeholder="Ej: 10 para sumar, -5 para restar">
+      <small class="info-text">Ingresá números positivos para entradas y negativos para salidas.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="reason">Motivo del Movimiento</label>
+      <select id="reason" formControlName="reason">
+        <option value="MANUAL_ADJUSTMENT">Ajuste Manual (Corrección)</option>
+        <option value="DAMAGED_GOODS">Mercadería Dañada / Rotura</option>
+        <option value="SUPPLIER_REFRESH">Ingreso de Proveedor</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add" [disabled]="stockForm.invalid">Registrar</button>
+      <button type="button" class="btn-delete" (click)="onClose.emit()">Cancelar</button>
+    </div>
+
+  </form>
+</div>

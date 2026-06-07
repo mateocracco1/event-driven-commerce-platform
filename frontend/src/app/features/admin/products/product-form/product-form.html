@@ -27,15 +27,17 @@
       }
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
+
+    <div class="form-group">
         <label for="price">Precio ($)</label>
         <input id="price" type="number" formControlName="price" step="0.01">
         @if (productForm.get('price')?.touched && productForm.get('price')?.invalid) {
           <small class="error">Debe ser mayor a 0.</small>
         }
-      </div>
+    </div>
 
+    <div class="form-row">
+    
       <div class="form-group">
         <label for="stock">Stock Inicial</label>
         <input id="stock" type="number" formControlName="stock">
@@ -43,8 +45,18 @@
           <small class="error">No puede ser negativo.</small>
         }
       </div>
+      
+      <div class="form-group">
+          <label for="minStock">Stock Mínimo de Alerta</label>
+          <input id="minStock" type="number" formControlName="minStock" placeholder="Ej: 5">
+          @if (productForm.get('minStock')?.touched && productForm.get('minStock')?.invalid) {
+            <small class="error">El stock mínimo debe ser mayor o igual a 0.</small>
+          }
+      </div>
+
     </div>
 
+    
     <div class="form-group">
       <label for="categoryId">Categoría Asociada</label>
       <select id="categoryId" formControlName="categoryId">
