@@ -1,1 +1,50 @@
-<p>category-list works!</p>
+<div class="user-list-header">
+  <h2>Gestión de Categorías</h2>
+  <button class="btn-add" (click)="openCreateForm()">Nueva Categoría</button>
+</div>
+
+<div class="table-container">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (cat of categories(); track cat.id) {
+        <tr>
+          <td><strong>{{ cat.id }}</strong></td>
+          <td>{{ cat.name }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="openEditForm(cat)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn-delete" (click)="deleteCategory(cat.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="3" class="empty-message">
+            No se encontraron categorías.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showForm()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-category-form
+        [categoryToEdit]="selectedCategory()"
+        (onClose)="closeForm()"
+        (onSave)="onCategorySaved()">
+      </app-category-form>
+    </div>
+  </div>
+}

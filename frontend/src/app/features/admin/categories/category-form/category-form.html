@@ -1,1 +1,24 @@
-<p>category-form works!</p>
+<div class="form-container">
+  <h2>{{ categoryToEdit ? 'Modificar Categoría' : 'Crear Nueva Categoría' }}</h2>
+
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    
+    <div class="form-group">
+      <label for="name">Nombre de la Categoría</label>
+      <input id="name" type="text" formControlName="name" placeholder="Ej: Electrónica, Indumentaria...">
+      @if (categoryForm.get('name')?.touched && categoryForm.get('name')?.invalid) {
+        <small class="error">El nombre es obligatorio (mínimo 3 caracteres).</small>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-add" [disabled]="categoryForm.invalid">
+        {{ categoryToEdit ? 'Guardar Cambios' : 'Crear Categoría' }}
+      </button>
+      <button type="button" class="btn-delete" (click)="cancel()">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>  
