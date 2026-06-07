@@ -2,6 +2,7 @@ package ecommerce.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -67,6 +68,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/resellers/register").permitAll() // <-- AGREGÁ ESTA LÍNEA
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN") // <-- Asegurate de tener esta línea
                                 .anyRequest().authenticated()
                                                 // El resto requiere JWT
                 );
@@ -84,19 +86,14 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
-
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS"));
-
-
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        // Cambiamos esto para permitir cualquier cabecera que mande Angular por detrás
+        configuration.setAllowedHeaders(Arrays.asList("*"));
 
         configuration.setAllowCredentials(true);
-
-        configuration.setExposedHeaders(Arrays.asList("Set-Cookie"));
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie", "Authorization")); // Exponemos Authorization por las dudas
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
