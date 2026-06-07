@@ -27,4 +27,9 @@ public class ProductUpdateDTO {
 
     @NotNull(message = "El ID de la categoría es obligatorio")
     private Long categoryId;
+
+    private String imageUrl;
+
+    private int minStock;
+
 }

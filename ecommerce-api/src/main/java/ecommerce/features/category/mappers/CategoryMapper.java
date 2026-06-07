@@ -21,7 +21,6 @@ public interface CategoryMapper {
     // Actualiza la categoría existente usando el mismo Request de entrada
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "active", ignore = true)
-    @Mapping(target = "products", ignore = true)
     void updateCategoryFromDto(CategoryRequest request, @MappingTarget Category category);
 }
 

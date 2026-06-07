@@ -30,4 +30,8 @@ public class ProductRequest {
 
     @NotNull(message = "La categoría es obligatoria")
     private Long categoryId;
+
+    private String imageUrl;
+
+    private int minStock;
 }

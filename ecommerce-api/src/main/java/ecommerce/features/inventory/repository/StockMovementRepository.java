@@ -1,10 +1,8 @@
 package ecommerce.features.inventory.repository;
 
-import ecommerce.features.inventory.StockMovement;
+import ecommerce.features.inventory.domain.StockMovement;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {

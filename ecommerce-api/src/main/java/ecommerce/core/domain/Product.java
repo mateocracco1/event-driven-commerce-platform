@@ -40,5 +40,11 @@ public class Product {
     private Category category;
 
 
+    @Column(length = 255)
+    private String imageUrl;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int minStock = 5;
 
 }

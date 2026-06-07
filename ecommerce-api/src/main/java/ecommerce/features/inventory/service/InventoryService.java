@@ -1,13 +1,15 @@
 package ecommerce.features.inventory.service;
 
 import ecommerce.core.domain.Product;
-import ecommerce.features.inventory.StockMovement;
+import ecommerce.features.inventory.domain.StockMovement;
 import ecommerce.features.inventory.domain.StockMovementReason;
 import ecommerce.features.inventory.repository.StockMovementRepository;
 import ecommerce.features.products.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 public class InventoryService {
 
@@ -34,6 +36,12 @@ public class InventoryService {
         // 3. Actualizar y guardar el producto
         product.setStock(newStock);
         productRepository.save(product);
+
+        // --- NOTIFICACIÓN DE STOCK MÍNIMO ---
+        if (product.getStock() <= product.getMinStock()) {
+            log.warn("🚨 ALERTA DE INVENTARIO: El producto '{}' (Código: {}) alcanzó o cayó por debajo de su stock mínimo. Stock actual: {}, Mínimo requerido: {}",
+                    product.getName(), product.getCode(), product.getStock(), product.getMinStock());
+        }
 
         // 4. Registrar el movimiento en el historial para auditoría
         StockMovement movement = StockMovement.builder()
