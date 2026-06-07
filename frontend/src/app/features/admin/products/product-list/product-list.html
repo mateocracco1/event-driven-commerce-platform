@@ -1,0 +1,60 @@
+<div class="user-list-header">
+  <h2>Gestión de Productos</h2>
+  <button class="btn-add" (click)="openCreateForm()">Nuevo Producto</button>
+</div>
+
+<div class="table-container">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Categoría</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (prod of products(); track prod.id) {
+        <tr>
+          <td><strong>{{ prod.code }}</strong></td>
+          <td>{{ prod.name }}</td>
+          <td>${{ prod.price }}</td>
+          <td>
+            <span class="badge" [class.low-stock]="prod.stock <= 5">
+              {{ prod.stock }} u.
+            </span>
+          </td>
+          <td>{{ prod.categoryId }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="openEditForm(prod)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button class="btn-delete" (click)="deleteProduct(prod.id!)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="empty-message">
+            No se encontraron productos en el catálogo.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showForm()) {
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <app-product-form 
+        [productToEdit]="selectedProduct()"
+        (onClose)="closeForm()"
+        (onSave)="onProductSaved()">
+      </app-product-form>
+    </div>
+  </div>
+}

@@ -1,15 +1,26 @@
 import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
-import { UserListComponent } from './users/user-list/user-list.component';
-
 
 export const ADMIN_ROUTES: Routes = [
   {
+    // Esta es la ruta padre del panel de admin (el layout con el sidebar)
     path: '',
-    component: AdminLayoutComponent, // El cascarón (Sidebar + Header)
+    loadComponent: () => import('./layout/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
-      { path: 'users', component: UserListComponent },
-      { path: '', redirectTo: 'users', pathMatch: 'full' } // Por defecto a usuarios
+      // Si entran a /admin a secas, los redirige automáticamente a la lista de usuarios
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      
+      // Sección de Usuarios
+      { 
+        path: 'users', 
+        loadComponent: () => import('./users/user-list/user-list.component').then(m => m.UserListComponent) 
+      },
+      
+      // NUEVA: Sección de Lista de Productos
+      { 
+        path: 'products', 
+        loadComponent: () => import('./products/product-list/product-list').then(m => m.ProductListComponent) 
+      },
+      
     ]
   }
 ];
