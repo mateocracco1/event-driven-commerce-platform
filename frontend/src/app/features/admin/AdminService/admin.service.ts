@@ -36,6 +36,10 @@ export class AdminService {
     return this.http.post<Product>(this.productApiUrl, product, { withCredentials: true });
   }
 
+  updateProduct(id: number, product: Product): Observable<Product> {
+  return this.http.put<Product>(`${this.productApiUrl}/${id}`, product, { withCredentials: true });
+}
+
   // Eliminar un producto por su ID
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${this.productApiUrl}/${id}`, { withCredentials: true });

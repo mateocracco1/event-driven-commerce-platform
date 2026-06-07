@@ -18,25 +18,25 @@
     <tbody>
       @for (prod of products(); track prod.id) {
         <tr>
-          <td><strong>{{ prod.code }}</strong></td>
-          <td>{{ prod.name }}</td>
-          <td>${{ prod.price }}</td>
-          <td>
-            <span class="badge" [class.low-stock]="prod.stock <= 5">
-              {{ prod.stock }} u.
+            <td><strong>{{ prod.code }}</strong></td>
+            <td>{{ prod.name }}</td>
+            <td>${{ prod.price }}</td>
+            <td>
+            <span class="badge" [class.low-stock]="prod.lowStock">
+                {{ prod.stock }} u.
             </span>
-          </td>
-          <td>{{ prod.categoryId }}</td>
-          <td class="actions">
+            </td>
+            <td>{{ prod.categoryName }}</td>
+            <td class="actions">
             <button class="btn-edit" (click)="openEditForm(prod)">
-              <mat-icon>edit</mat-icon>
+                <mat-icon>edit</mat-icon>
             </button>
             <button class="btn-delete" (click)="deleteProduct(prod.id!)">
-              <mat-icon>delete</mat-icon>
+                <mat-icon>delete</mat-icon>
             </button>
-          </td>
-        </tr>
-      } @empty {
+            </td>
+            </tr>
+        } @empty {
         <tr>
           <td colspan="6" class="empty-message">
             No se encontraron productos en el catálogo.

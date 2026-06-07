@@ -25,18 +25,13 @@ export class ProductFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.loadCategories();
-
-    // Si viene un producto para editar, cargamos sus datos en el formulario
-    if (this.productToEdit) {
-      this.productForm.patchValue(this.productToEdit);
-    }
+    this.loadCategoriesAndPatch();
   }
 
-  // Inicializamos el formulario con las validaciones requeridas por tu User Story
+  // Inicializamos el formulario con las validaciones requeridas
   private initForm(): void {
     this.productForm = this.fb.group({
-      id: [null], // Lo necesitamos oculto por si estamos editando
+      id: [null], 
       code: ['', [Validators.required, Validators.minLength(3)]],
       name: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -46,39 +41,72 @@ export class ProductFormComponent implements OnInit {
     });
   }
 
-  // Cargamos las categorías desde el backend para el <select>
-  private loadCategories(): void {
+  // Cargamos categorías y manejamos el mapeo por si es edición
+  private loadCategoriesAndPatch(): void {
     this.adminService.getAllCategories().subscribe({
-      next: (data) => this.categories.set(data),
+      next: (data) => {
+        this.categories.set(data);
+
+        // Si venimos en modo edición, cargamos los datos del producto
+        if (this.productToEdit) {
+          this.productForm.patchValue(this.productToEdit);
+
+          // TRUCO DE MAPEO: Como el DTO trae categoryName (String) y el select busca un categoryId (Long),
+          // buscamos en la lista de categorías cuál coincide con el nombre para setear su ID.
+          if (this.productToEdit.categoryName) {
+            const foundCategory = data.find(c => c.name === this.productToEdit?.categoryName);
+            if (foundCategory) {
+              this.productForm.patchValue({ categoryId: foundCategory.id });
+            }
+          }
+        }
+      },
       error: (err) => console.error('Error al cargar categorías en el formulario:', err)
     });
   }
 
-  // Se ejecuta al hacer el submit del formulario
+  // Se ejecuta al hacer el submit del formulario (Creación o Edición)
   onSubmit(): void {
     if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched(); // Marca los errores visualmente si intentan mandar vacío
+      this.productForm.markAllAsTouched(); 
       return;
     }
 
     const productData: Product = this.productForm.value;
 
-    // TODO: En un futuro paso podemos agregar acá la lógica de si edita (PUT) o crea (POST)
-    // De momento, implementamos la creación directo de tu User Story
-    this.adminService.createProduct(productData).subscribe({
-      next: () => {
-        alert('Producto guardado correctamente');
-        this.onSave.emit(); // Le avisamos al padre que refresque la lista y cierre
-      },
-      error: (err) => {
-        console.error('Error al guardar el producto:', err);
-        alert('Hubo un error al guardar el producto');
-      }
-    });
+    // Evaluamos el modo según la presencia del producto a editar y su ID
+    if (this.productToEdit && this.productToEdit.id) {
+      
+      // --- MODO MODIFICACIÓN (PUT) ---
+      this.adminService.updateProduct(this.productToEdit.id, productData).subscribe({
+        next: () => {
+          alert('Producto modificado correctamente');
+          this.onSave.emit(); // Avisa al padre que refresque la tabla y cierre el modal
+        },
+        error: (err) => {
+          console.error('Error al modificar el producto:', err);
+          alert('Hubo un error al modificar el producto');
+        }
+      });
+
+    } else {
+      
+      // --- MODO CREACIÓN (POST) ---
+      this.adminService.createProduct(productData).subscribe({
+        next: () => {
+          alert('Producto creado correctamente');
+          this.onSave.emit(); // Avisa al padre que refresque la lista
+        },
+        error: (err) => {
+          console.error('Error al guardar el producto:', err);
+          alert('Hubo un error al guardar el producto');
+        }
+      });
+    }
   }
 
   // Al presionar el botón Cancelar
   cancel(): void {
-    this.onClose.emit(); // Le avisa al padre que simplemente cierre el modal
+    this.onClose.emit(); 
   }
 }
