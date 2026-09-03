@@ -43,3 +43,7 @@ public class ResellerService {
     }
 
 }
+//Punto a tener en cuenta para el futuro:
+//En el registro creás el usuario básico y el perfil, pero no
+// le asignás roles explícitos en user.getRoles().add(...) (como ROLE_USER). Cuando agregues la feature de aprobación del admin,
+// podrás asignarle el rol correspondiente (ROLE_RESELLER).

@@ -1,0 +1,43 @@
+⚠️ Puntos débiles / malas prácticas (lo que deberías corregir)
+1. Manejo de errores rudimentario (importante)
+Tirás excepciones genéricas y el front termina traduciéndolas con alert() o con err crudo.
+
+Backend: no hay un @RestControllerAdvice global (manejo centralizado de excepciones). Ante un error, el cliente recibe un HTML/stacktrace de Spring en lugar de un JSON limpio. Esto es casi obligatorio corregir para una tesis: implementá un GlobalExceptionHandler con @RestControllerAdvice y estructuras de error (message, status, timestamp).
+Frontend: dependés de alert() en casi todo (product-form, category-form, login, stock). No es elegante. Migrá a MatSnackBar (que ya lo usaste en reset-password) de forma consistente.
+2. Dependencia de localStorage para roles/estado (inconsistente con la cookie)
+El JWT va en cookie (bien), pero el rol y el estado de login se guardan en localStorage. Un usuario puede editar los roles en consola y "hacerse admin" en el front. Aunque el backend valida de verdad (con @PreAuthorize), la guarda del admin del front es solo visual y manipulable.
+
+En mi opinión, como el backend ya valida, esto "funciona", pero es una debilidad de consistencia que un jurado puede tirar abajo. En una tesis deberías comentar esta decisión o enviar el rol desde el backend en la respuesta de /me de forma más robusta.
+
+3. Credenciales y secretos hardcodeados en el repositorio (🚨 crítico)
+application.yaml tiene usuario/contraseña de Gmail real del autor y el jwtSecret literal.
+compose.yaml tiene password de root de MySQL.
+Para una tesis pública, al menos el jwtSecret y la password de mail deberían ir en variables de entorno / application-env.yaml (ignorado por git). Es una mala práctica que suma puntos en contra.
+4. Duplicación de rutas /admin en app.routes.ts
+Tenés el bloque /admin declarado dos veces (una con guard y otra sin). La primera ya genera el canActivate, la segunda es redundante y confusa. Limpiar eso.
+
+5. Faltan pruebas (la madre)
+Solo hay un test de contexto (EcommerceApiApplicationTests) y spec de componentes en el front. Para "robustez real" haría falta como mínimo:
+
+Algún test de servicio en el backend (ej. InventoryService con mock).
+Pruebas de la guarda adminGuard (ya tenés el .spec.ts sin contenido real).
+Idealmente algún test de controller con MockMvc.
+6. Código muerto / TODO / pendientes
+editUser() en UserListComponent lanza throw new Error('Method not implemented').
+En el HTML de user-list usás user.role pero el DTO del backend envía roles (array). Esto está roto en la vista — el badge de rol no va a mostrarse.
+ProductService.updateProduct no es @Transactional (el resto sí), inconsistencia.
+Comentarios en español mezclados con código, y algunos code smells (método findAllUsers() que no se usa).
+7. Validaciones de producto inconsistentes
+ProductRequest.code tiene @NotBlank("El nombre es obligatorio") (mensaje equivocado, aunque el campo sí existe) y el front lo valida.
+En edición de producto deshabilitan el stock pero el ProductUpdateDTO igual lo exige (@NotNull) — depender de getRawValue() para "colar" el valor es frágil.
+8. Inyección por campo en AuthTokenFilter
+Usa @Autowired por campo (el resto del proyecto usa inyección por constructor con @RequiredArgsConstructor). Solo una inconsistencia de estilo.
+
+🚀 Sugerencias priorizadas para llegar con tranquilidad
+Prioridad	Acción	Por qué
+1	@RestControllerAdvice global + DTO de error estandarizado	Es lo que más "profesionaliza" el backend y evita miedos ante cualquier fallo en la defensa.
+2	Mover secretos a variables de entorno / .env	Elimina el punto más criticable de seguridad.
+3	Corregir el badge de rol en user-list (usa roles correctamente)	Es una pantalla de tu panel admin que está mostrando mal el dato.
+4	Eliminar la ruta /admin duplicada y código muerto (editUser)	Limpieza que da puntos.
+5	Agregar mínimo 2-3 tests (backend service + front guard)	Demuestra que validás lo que hacés, sube la nota.
+6	Reemplazar alert() por MatSnackBar	Da mucha más terminación al front.

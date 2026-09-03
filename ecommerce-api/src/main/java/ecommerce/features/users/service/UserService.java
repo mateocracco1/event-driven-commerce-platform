@@ -23,7 +23,7 @@ public class UserService {
     private  final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public List<UserDto> findAllByEnabledTrue() {
+    public List<UserDto> findAllByEnabledTrue(){
         return userRepository.findAllByEnabledTrue().stream()
                 .map(userManagementMapper::toDto)
                 .collect(Collectors.toList());
