@@ -41,6 +41,7 @@ public class ProductService {
     }
 
 
+    @Transactional
     public ProductResponse updateProduct(Long id, ProductUpdateDTO dto) {
         Product product = findProductActiveOrThrow(id);
         Category category = categoryRepository.findById(dto.getCategoryId())

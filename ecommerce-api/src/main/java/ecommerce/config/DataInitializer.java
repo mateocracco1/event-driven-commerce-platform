@@ -48,7 +48,7 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(admin);
         }
 
-        // 3. Crear Usuarios de prueba
+
         createTestUser("Mateo", "Cracco", "mateo@test.com", userRole);
         createTestUser("Pepe", "Argento", "pepe@test.com", userRole);
         createTestUser("Jose", "Garcia", "jose@test.com", userRole);

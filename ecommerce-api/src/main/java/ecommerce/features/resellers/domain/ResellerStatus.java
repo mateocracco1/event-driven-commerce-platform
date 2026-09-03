@@ -5,6 +5,4 @@ public enum ResellerStatus {
     PENDING,
     APPROVED,
     REJECTED
-
-
 }
