@@ -1,10 +1,13 @@
 package ecommerce.features.category.service;
 
 import ecommerce.core.domain.Category;
+import ecommerce.core.exceptions.BusinessException;
+import ecommerce.core.exceptions.ResourceNotFoundException;
 import ecommerce.features.category.dto.CategoryRequest;
 import ecommerce.features.category.dto.CategoryResponse;
 import ecommerce.features.category.mappers.CategoryMapper;
 import ecommerce.features.category.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,15 +16,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getAllCategories() {
@@ -57,10 +57,9 @@ public class CategoryService {
 
     @Transactional
     public void reactivateCategory(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + id));
+        Category category  = findCategoryActiveOrThrow(id);
         if (category.isActive()) {
-            throw new RuntimeException("La categoría ya está activa");
+            throw new BusinessException("The category is already active");
         }
         category.setActive(true);
         categoryRepository.save(category);
@@ -69,6 +68,6 @@ public class CategoryService {
     private Category findCategoryActiveOrThrow(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .filter(Category::isActive)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada o inactiva con ID: " + categoryId));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + categoryId));
     }
 }
