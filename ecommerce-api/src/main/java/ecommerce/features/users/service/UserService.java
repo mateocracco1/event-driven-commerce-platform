@@ -1,6 +1,8 @@
 package ecommerce.features.users.service;
 
 import ecommerce.core.domain.User;
+import ecommerce.core.exceptions.BusinessException;
+import ecommerce.core.exceptions.ResourceNotFoundException;
 import ecommerce.core.repository.UserRepository;
 import ecommerce.features.users.dto.PasswordUpdateDto;
 import ecommerce.features.users.dto.UserDto;
@@ -64,18 +66,16 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserDto findByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+        User user = findUserByEmailOrThrow(email);
         return userManagementMapper.toDto(user);
     }
 
 
     @Transactional
     public void updatePassword(String email, PasswordUpdateDto passwordDto) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        User user = findUserByEmailOrThrow(email);
         if (!passwordEncoder.matches(passwordDto.getCurrentPassword(), user.getPassword())) {
-            throw new RuntimeException("La contraseña actual es incorrecta");
+            throw new BusinessException("The current password is incorrect.");
         }
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword()));
         userRepository.save(user);
@@ -83,9 +83,7 @@ public class UserService {
 
     @Transactional
     public UserDto updateProfileByEmail(String email, UserUpdateDto updateDto) {
-        // 1. Buscás al usuario por el email (que es único)
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        User user = findUserByEmailOrThrow(email);
         user.setName(updateDto.getName());
         user.setLastName(updateDto.getLastName());
 
@@ -96,7 +94,12 @@ public class UserService {
     @Transactional(readOnly = true)
     private User findUserOrThrow(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userId));
+    }
+
+    private User findUserByEmailOrThrow(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario not found with email: " + email));
     }
 
 }
