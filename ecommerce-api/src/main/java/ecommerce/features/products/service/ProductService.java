@@ -2,6 +2,8 @@ package ecommerce.features.products.service;
 
 import ecommerce.core.domain.Category;
 import ecommerce.core.domain.Product;
+import ecommerce.core.exceptions.BusinessException;
+import ecommerce.core.exceptions.ResourceNotFoundException;
 import ecommerce.features.category.repository.CategoryRepository;
 import ecommerce.features.products.ProductSpecifications;
 import ecommerce.features.products.dto.ProductUpdateDTO;
@@ -44,8 +46,7 @@ public class ProductService {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductUpdateDTO dto) {
         Product product = findProductActiveOrThrow(id);
-        Category category = categoryRepository.findById(dto.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        Category category = findCategoryByIdOrThrow(dto.getCategoryId());
         productMapper.updateProductFromDto(dto, product);
         product.setCategory(category);
         return productMapper.toResponse(productRepository.save(product));
@@ -53,8 +54,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+        Category category = findCategoryByIdOrThrow(request.getCategoryId());
         Product product = productMapper.toEntity(request);
         product.setCategory(category);
         return productMapper.toResponse(productRepository.save(product));
@@ -71,18 +71,14 @@ public class ProductService {
     @Transactional
     public void reactivateProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
         if (product.isActive()) {
-            throw new RuntimeException("El producto ya está activo");
+            throw new BusinessException("The product is already active.");
         }
         product.setActive(true);
         productRepository.save(product);
     }
 
-    private Product findProductActiveOrThrow(Long productId) {
-        return productRepository.findByIdAndActiveTrue(productId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado o inactivo con ID: " + productId));
-    }
 
     @Transactional(readOnly = true)
     public List<ProductResponse> searchProducts(String search, Long categoryId, String direction) {
@@ -100,4 +96,17 @@ public class ProductService {
                 .map(productMapper::toResponse)
                 .toList();
     }
+
+
+    // Métodos auxiliares de búsqueda
+    private Product findProductActiveOrThrow(Long productId) {
+        return productRepository.findByIdAndActiveTrue(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found or inactive with ID " + productId));
+    }
+
+    private Category findCategoryByIdOrThrow(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found or inactive with ID " + categoryId));
+    }
+
 }
