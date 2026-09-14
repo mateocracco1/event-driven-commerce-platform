@@ -5,8 +5,7 @@ import ecommerce.core.domain.Role; // Importa desde el core
 import ecommerce.features.auth.dto.SignupRequest;
 import ecommerce.features.auth.dto.UserResponse;
 import org.mapstruct.Mapper;
-// ... resto de anotaciones
-import org.mapstruct.Mapper;
+
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
@@ -28,7 +27,8 @@ public interface UserMapper {
 
     @Named("mapRoles")
     default Set<String> mapRoles(Set<Role> roles) {
-        if (roles == null) return null;
+        if (roles == null)
+            return null;
         return roles.stream()
                 .map(Role::getName)
                 .collect(Collectors.toSet());

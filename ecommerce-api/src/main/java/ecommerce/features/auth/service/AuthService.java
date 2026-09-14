@@ -2,6 +2,8 @@ package ecommerce.features.auth.service;
 
 import ecommerce.core.domain.Role;
 import ecommerce.core.domain.User;
+import ecommerce.core.exceptions.BusinessException;
+import ecommerce.core.exceptions.ResourceNotFoundException;
 import ecommerce.features.auth.dto.LoginRequest;
 import ecommerce.features.auth.dto.SignupRequest;
 import ecommerce.features.auth.dto.UserResponse;
@@ -40,7 +42,7 @@ public class AuthService {
     @Transactional
     public UserResponse registerUser(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Error: El email ya está registrado.");
+            throw new BusinessException("The email is already registered: " + request.getEmail());
         }
 
         User user = userMapper.toEntity(request);
@@ -49,7 +51,7 @@ public class AuthService {
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("Error: El rol ROLE_USER no existe en la DB."));
+                .orElseThrow(() -> new ResourceNotFoundException("ROLE_USER not found"));
         roles.add(userRole);
         user.setRoles(roles);
 
@@ -79,7 +81,7 @@ public class AuthService {
         // 6. Retornar el DTO de respuesta para el Front
         // Buscamos la entidad para mapearla a UserResponse
         User user = userRepository.findByEmail(userDetails.getEmail())
-                .orElseThrow(() -> new RuntimeException("Error: Usuario no encontrado tras autenticar."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + userDetails.getEmail()));
 
         return userMapper.toResponse(user);
     }
