@@ -1,12 +1,12 @@
 package ecommerce.core.exceptions;
 
-public abstract class BusinessException extends RuntimeException {
+public  class BusinessException extends RuntimeException {
 
-    protected BusinessException(String message) {
+    public BusinessException(String message) {
         super(message);
     }
 
-    protected BusinessException(String message, Throwable cause) {
+    public BusinessException(String message, Throwable cause) {
         super(message, cause);
     }
 }
