@@ -4,7 +4,7 @@ services:
     image: 'mysql:8.0.33'
     container_name: mysql-pp2
     environment:
-      - 'MYSQL_DATABASE=ppdb'
-      - 'MYSQL_ROOT_PASSWORD=***REMOVED_DB_PASSWORD***'
+      - MYSQL_DATABASE=${DB_NAME:-ppdb}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
     ports:
-      - '3306:3306'
+      - '${DB_PORT:-3306}:3306'
