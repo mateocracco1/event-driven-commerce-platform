@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Builder
 public class ProductRequest {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "El codigo es obligatorio")
     private String code;
 
     @NotBlank(message = "El nombre es obligatorio")
