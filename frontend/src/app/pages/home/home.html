@@ -1,22 +1,147 @@
-<div class="container mt-4">
-  <h1>Catálogo de Productos</h1>
-  <p>Bienvenid@</p>
-  
-  <div class="product-grid">
-    @for (item of [1,2,3,4]; track item) {
-      <mat-card class="product-card">
-        <mat-card-header>
-          <mat-card-title>Producto {{item}}</mat-card-title>
-        </mat-card-header>
-        <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Producto">
-        <mat-card-content>
-          <p>Descripción  del producto.........</p>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-button color="primary">VER DETALLE</button>
-          <button mat-raised-button color="accent">COMPRAR</button>
-        </mat-card-actions>
-      </mat-card>
-    }
+<div class="home-page">
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">Catálogo de Productos</h1>
+      <p class="hero-subtitle">Encontrá todo lo que necesitás al mejor precio</p>
+    </div>
   </div>
+
+  <!-- ══════════════════ BARRA DE FILTROS ══════════════════ -->
+  <div class="filters-bar">
+
+    <!-- Buscador -->
+    <div class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar productos..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange()"
+      />
+    </div>
+
+    <!-- Categoría -->
+    <select class="filter-select" [(ngModel)]="selectedCategory" (change)="onCategoryChange()">
+      <option [ngValue]="undefined">Todas las categorías</option>
+      @for (cat of categories(); track cat.id) {
+        <option [ngValue]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+
+    <!-- Precio -->
+    <select class="filter-select" [(ngModel)]="priceOrder" (change)="onOrderChange()">
+      <option value="asc">Precio: menor a mayor</option>
+      <option value="desc">Precio: mayor a menor</option>
+    </select>
+
+    <!-- Limpiar -->
+    <button mat-stroked-button class="btn-clear" (click)="clearFilters()">
+      <mat-icon>clear</mat-icon> Limpiar
+    </button>
+
+  </div>
+
+  <!-- ══════════════════ ESTADOS ══════════════════ -->
+
+  @if (loading()) {
+    <div class="state-wrapper">
+      <mat-spinner diameter="52"></mat-spinner>
+      <p>Cargando productos...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="state-wrapper error-state">
+      <mat-icon>error_outline</mat-icon>
+      <p>No se pudo cargar el catálogo. Intentá de nuevo más tarde.</p>
+      <button mat-raised-button color="primary" (click)="loadProducts()">Reintentar</button>
+    </div>
+  }
+
+  @if (!loading() && !error() && products().length === 0) {
+    <div class="state-wrapper">
+      <mat-icon>search_off</mat-icon>
+      <p>No se encontraron productos con esos filtros.</p>
+      <button mat-stroked-button (click)="clearFilters()">Ver todos</button>
+    </div>
+  }
+
+  <!-- ══════════════════ GRILLA DE PRODUCTOS ══════════════════ -->
+  @if (!loading() && !error() && products().length > 0) {
+    <div class="product-grid">
+      @for (product of products(); track product.id) {
+
+        <mat-card class="product-card">
+
+          <!-- Imagen -->
+          <div class="card-img-wrapper">
+            <img
+              class="product-img"
+              [src]="product.imageUrl || 'https://material.angular.io/assets/img/examples/shiba2.jpg'"
+              [alt]="product.name"
+              (error)="onImageError($event)"
+            />
+            <!-- Badge low stock -->
+            @if (product.lowStock) {
+              <span class="badge-low-stock">¡Últimas unidades!</span>
+            }
+            <!-- Badge sin stock -->
+            @if (product.stock === 0) {
+              <span class="badge-no-stock">Sin stock</span>
+            }
+          </div>
+
+          <mat-card-content class="card-content">
+            <!-- Categoría -->
+            @if (product.categoryName) {
+              <span class="category-label">{{ product.categoryName }}</span>
+            }
+            <!-- Nombre -->
+            <h2 class="product-name">{{ product.name }}</h2>
+            <!-- Descripción -->
+            <p class="product-description">{{ product.description }}</p>
+            <!-- Precio -->
+            <p class="product-price">$ {{ product.price | number:'1.2-2' }}</p>
+          </mat-card-content>
+
+          <!-- Control de cantidad + Botón agregar -->
+          <mat-card-actions class="card-actions">
+            <div class="qty-control">
+              <button
+                mat-icon-button
+                class="qty-btn"
+                (click)="decreaseQty(product.id!)"
+                [disabled]="getQty(product.id!) <= 1">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="qty-value">{{ getQty(product.id!) }}</span>
+              <button
+                mat-icon-button
+                class="qty-btn"
+                (click)="increaseQty(product.id!)"
+                [disabled]="product.stock !== undefined && getQty(product.id!) >= product.stock">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            <button
+              mat-raised-button
+              color="primary"
+              class="btn-add"
+              (click)="addToCart(product)"
+              [disabled]="product.stock === 0">
+              <mat-icon>add_shopping_cart</mat-icon>
+              {{ product.stock === 0 ? 'Sin stock' : 'Agregar' }}
+            </button>
+          </mat-card-actions>
+
+        </mat-card>
+
+      }
+    </div>
+  }
+
 </div>

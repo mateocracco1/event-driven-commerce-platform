@@ -1,0 +1,44 @@
+<section class="feedback-wrapper">
+  <mat-card class="feedback-card success-card">
+
+    <div class="icon-circle success">
+      <mat-icon>check_circle</mat-icon>
+    </div>
+
+    <mat-card-content class="card-body">
+      <h1 class="feedback-title">¡Pago exitoso!</h1>
+      <p class="feedback-subtitle">Tu compra fue procesada correctamente.</p>
+
+      @if (orderId) {
+        <div class="detail-chip">
+          <mat-icon>receipt_long</mat-icon>
+          <span>Orden #{{ orderId }}</span>
+        </div>
+      }
+
+      @if (paymentId) {
+        <div class="detail-chip secondary">
+          <mat-icon>confirmation_number</mat-icon>
+          <span>Pago #{{ paymentId }}</span>
+        </div>
+      }
+
+      <p class="feedback-info">
+        Te enviaremos un email con el detalle de tu pedido.
+        Podés seguir el estado desde tu historial de órdenes.
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions">
+      <button mat-raised-button color="primary" (click)="goToMyOrders()">
+        <mat-icon>list_alt</mat-icon>
+        Ver mis órdenes
+      </button>
+      <button mat-stroked-button color="primary" (click)="goToHome()">
+        <mat-icon>storefront</mat-icon>
+        Seguir comprando
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</section>

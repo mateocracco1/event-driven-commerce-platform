@@ -21,10 +21,26 @@ export const routes: Routes = [
     // Aquí luego pondremos el adminGuard para seguridad
   },
   { path: 'home', component: HomeComponent },
+  { path: 'cart', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
   { path: 'register', component: RegisterComponent },
   { path: 'reseller-register', component: ResellerRegisterComponet },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+
+  // ── Páginas de feedback de Mercado Pago ──────────────────────────
+  {
+    path: 'checkout/success',
+    loadComponent: () => import('./features/checkout/success/checkout-success').then(m => m.CheckoutSuccessComponent)
+  },
+  {
+    path: 'checkout/failure',
+    loadComponent: () => import('./features/checkout/failure/checkout-failure').then(m => m.CheckoutFailureComponent)
+  },
+  {
+    path: 'checkout/pending',
+    loadComponent: () => import('./features/checkout/pending/checkout-pending').then(m => m.CheckoutPendingComponent)
+  },
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' },
   
