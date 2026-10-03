@@ -26,7 +26,11 @@ spring:
           starttls:
             enable: true
             required: true
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 ecommerce:
   app:
     jwtSecret: ${JWT_SECRET}
