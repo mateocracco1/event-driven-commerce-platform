@@ -9,6 +9,7 @@ import ecommerce.features.order.dto.OrderItemRequest;
 import ecommerce.features.order.dto.OrderResponse;
 import ecommerce.features.order.mapper.OrderMapper;
 import ecommerce.features.order.repository.OrderRepository;
+import ecommerce.features.payment.infrastructure.mercadopago.MercadoPagoPreferenceService;
 import ecommerce.features.products.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderMapper orderMapper;
+
+    private final MercadoPagoPreferenceService mercadoPagoPreferenceService;
 
     @Transactional
     public OrderResponse checkout(Long customerId, CheckoutRequest request) {
@@ -71,8 +74,10 @@ public class OrderService {
         // 5. Persistir (CascadeType.ALL guarda los items automáticamente)
         Order savedOrder = orderRepository.save(order);
 
-        return orderMapper.toResponse(savedOrder);
-    }
+        // 6. Generar la Preference en Mercado Pago con el order.id generado
+        String paymentUrl = mercadoPagoPreferenceService.createPaymentPreference(savedOrder);
+
+        return orderMapper.toResponse(savedOrder, paymentUrl);    }
 
     @Transactional(readOnly = true)
     public OrderResponse getOrderById(Long id) {

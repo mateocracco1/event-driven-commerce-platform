@@ -67,6 +67,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN") // <-- Asegurate de tener esta línea
+                                .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
                                 .anyRequest().authenticated()
                                                 // El resto requiere JWT
                 );

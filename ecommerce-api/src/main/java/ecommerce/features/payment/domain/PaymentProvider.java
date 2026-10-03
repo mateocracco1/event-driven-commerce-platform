@@ -2,7 +2,7 @@ package ecommerce.features.payment.domain;
 
 public enum PaymentProvider {
 
-    MERCADOPAGO,
+    MERCADO_PAGO,
     STRIPE,
     CASH
 
