@@ -4,13 +4,14 @@ import ecommerce.features.payment.event.PaymentApprovedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@Profile({"dev", "test"})
 @Slf4j
 @RestController
 @RequestMapping("/api/payments/test")

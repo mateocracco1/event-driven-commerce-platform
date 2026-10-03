@@ -13,5 +13,6 @@ public record OrderResponse(
         Long customerId,
         BigDecimal totalAmount,
         List<OrderItemResponse> items,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        String paymentUrl
 ) {}
