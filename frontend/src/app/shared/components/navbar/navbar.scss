@@ -3,7 +3,7 @@ mat-toolbar {
   color: white !important;
   display: flex;
   align-items: center;
-  padding: 0 24px; // Un poco más de aire a los costados
+  padding: 0 24px;
 }
 
 .spacer {
@@ -16,11 +16,12 @@ mat-toolbar {
   gap: 8px;
 }
 
-/* Estilo del HOME */
+/* HOME brand */
 .brand {
   font-weight: bold;
   font-size: 1.3rem;
   letter-spacing: 1px;
+  margin-right: 4px;
 }
 
 /* Texto de Bienvenida */
@@ -32,15 +33,13 @@ mat-toolbar {
   strong { font-weight: 600; }
 }
 
-/* Botón del Círculo de Usuario */
+/* Botón círculo de usuario */
 .user-button {
   color: white !important;
-  mat-icon {
-    transform: scale(1.2); // Que se vea un poquito más grande
-  }
+  mat-icon { transform: scale(1.2); }
 }
 
-/* Botón INICIAR SESIÓN */
+/* INICIAR SESIÓN */
 .btn-login {
   color: white !important;
   &:hover {
@@ -48,49 +47,53 @@ mat-toolbar {
   }
 }
 
-/* Botón REGISTRARSE (El que resalta) */
+/* REGISTRARSE */
 .btn-register {
   background-color: white !important;
-  color: var(--mat-sys-primary) !important; // Usa el azul del nav para el texto
+  color: var(--mat-sys-primary) !important;
   font-weight: bold;
-  border-radius: 25px; // Forma de cápsula
+  border-radius: 25px;
   padding: 0 20px;
-  
   &:hover {
     background-color: #f0f0f0 !important;
   }
 }
 
-.nav-user-section {
+/* Botón Revendedor — ahora a la izquierda junto al logo */
+.btn-reseller {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin-left: 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  cursor: pointer; // Clave para que parezca un botón
-  padding: 5px 10px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  gap: 4px;
 
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.05); // Un sutil gris al pasar el mouse
-  }
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
 
-  .user-greeting {
-    font-weight: 500;
-  }
-}
-
-
-//revendodr bton
-
-/* Estilo para el botón de Revendedores */
-.btn-reseller {
-  color: white !important;
-  font-weight: 500;
-  margin-right: 8px;
-  border-radius: 20px;
-  
   &:hover {
     background-color: rgba(255, 255, 255, 0.1) !important;
     border-color: white;
+    color: white !important;
+  }
+}
+
+/* 🛒 Botón Carrito */
+.cart-button {
+  color: white !important;
+  position: relative;
+
+  mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover mat-icon {
+    transform: scale(1.15);
   }
 }
