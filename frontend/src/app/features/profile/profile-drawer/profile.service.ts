@@ -9,7 +9,7 @@ export class ProfileService {
   // Usamos una Signal (lo más moderno de Angular) para manejar el estado
   isOpen = signal<boolean>(false);
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = '/api/users';
 
 
 

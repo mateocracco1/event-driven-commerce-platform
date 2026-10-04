@@ -12,8 +12,8 @@ import { Product, Category } from '../core/models/product.model';
 })
 export class ProductService {
   private http = inject(HttpClient);
-  private productApiUrl = 'http://localhost:8080/api/products';
-  private categoryApiUrl = 'http://localhost:8080/api/categories';
+  private productApiUrl = '/api/products';
+  private categoryApiUrl = '/api/categories';
 
   // Catálogo público (sin credenciales)
   getAll(): Observable<Product[]> {

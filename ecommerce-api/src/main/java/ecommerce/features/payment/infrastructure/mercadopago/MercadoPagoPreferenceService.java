@@ -33,9 +33,9 @@ public class MercadoPagoPreferenceService {
                 .toList();
 
         PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                .success("http://localhost:4200/checkout/success")
-                .pending("http://localhost:4200/checkout/pending")
-                .failure("http://localhost:4200/checkout/failure")
+                .success("https://localhost:4200/checkout/success")
+                .pending("https://localhost:4200/checkout/pending")
+                .failure("https://localhost:4200/checkout/failure")
                 .build();
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
@@ -43,6 +43,7 @@ public class MercadoPagoPreferenceService {
                 .externalReference(order.getId().toString())
                 .notificationUrl(webhookUrl)
                 .backUrls(backUrls)
+                .autoReturn("approved")
                 .build();
 
         try {
