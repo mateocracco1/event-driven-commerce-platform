@@ -10,6 +10,12 @@ export interface CartItem {
   providedIn: 'root',
 })
 export class CartService {
+  isOpen = signal<boolean>(false);
+  
+  open() { this.isOpen.set(true); }
+  close() { this.isOpen.set(false); }
+  toggle() { this.isOpen.update(v => !v); }
+
   // Estado reactivo del carrito usando Signals
   private _items = signal<CartItem[]>(this.loadFromStorage());
 

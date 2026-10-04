@@ -67,7 +67,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN") // <-- Asegurate de tener esta línea
-                                .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
+                                .requestMatchers("/api/payments/webhook/**").permitAll()
                                 .anyRequest().authenticated()
                                                 // El resto requiere JWT
                 );
@@ -85,7 +85,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:4200", "http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 
         // Cambiamos esto para permitir cualquier cabecera que mande Angular por detrás

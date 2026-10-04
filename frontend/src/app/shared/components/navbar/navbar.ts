@@ -47,6 +47,6 @@ export class NavbarComponent {
   }
 
   goToCart(): void {
-    this.router.navigate(['/cart']);
+    this.cartService.open();
   }
 }
