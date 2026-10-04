@@ -13,20 +13,20 @@
   <!-- DERECHA: Carrito + Usuario -->
   <div class="nav-actions">
 
-    <!-- 🛒 Botón carrito con badge -->
-    <button mat-icon-button class="cart-button" (click)="goToCart()" aria-label="Carrito de compras">
-      <mat-icon
-        [matBadge]="cartService.itemCount() > 0 ? cartService.itemCount() : null"
-        matBadgeColor="warn"
-        matBadgeSize="small">
-        shopping_cart
-      </mat-icon>
-    </button>
-
     @if (!isLoggedIn) {
       <button mat-button class="btn-login" routerLink="/login">INICIAR SESIÓN</button>
       <button mat-flat-button class="btn-register" routerLink="/register">REGISTRARSE</button>
     } @else {
+
+      <!-- 🛒 Botón carrito con badge -->
+      <button mat-icon-button class="cart-button" (click)="goToCart()" aria-label="Carrito de compras">
+        <mat-icon
+          [matBadge]="cartService.itemCount() > 0 ? cartService.itemCount() : null"
+          matBadgeColor="warn"
+          matBadgeSize="small">
+          shopping_cart
+        </mat-icon>
+      </button>
 
       <span class="user-name" (click)="profileService.open()" style="cursor: pointer">
         Hola, <strong>{{ userName }}</strong>
@@ -40,6 +40,10 @@
         <button mat-menu-item (click)="profileService.open()">
           <mat-icon>person</mat-icon>
           <span>Mi Perfil</span>
+        </button>
+        <button mat-menu-item routerLink="/my-orders">
+          <mat-icon>receipt_long</mat-icon>
+          <span>Mis Órdenes</span>
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">

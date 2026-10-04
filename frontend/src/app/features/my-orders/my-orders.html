@@ -1,0 +1,79 @@
+<div class="orders-container">
+  <div class="page-header">
+    <h1>Mis Órdenes</h1>
+    <p>Revisa el historial y estado de tus compras.</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Cargando tus órdenes...</p>
+    </div>
+  } @else if (error) {
+    <div class="error-state">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-button (click)="loadOrders()">Reintentar</button>
+    </div>
+  } @else if (orders.length === 0) {
+    <div class="empty-state">
+      <mat-icon>receipt_long</mat-icon>
+      <h2>No tienes órdenes aún</h2>
+      <p>¡Explora nuestros productos y haz tu primera compra!</p>
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of orders; track order.id) {
+        <mat-card class="order-card" appearance="outlined">
+          <mat-card-header>
+            <div mat-card-avatar class="order-icon">
+              <mat-icon>shopping_bag</mat-icon>
+            </div>
+            <mat-card-title>Orden #{{ order.id }}</mat-card-title>
+            <mat-card-subtitle>{{ order.createdAt | date:'medium' }}</mat-card-subtitle>
+            
+            <div class="spacer"></div>
+            
+            <mat-chip-set>
+              <mat-chip [color]="getStatusColor(order.status)" highlighted>
+                {{ getStatusLabel(order.status) }}
+              </mat-chip>
+            </mat-chip-set>
+          </mat-card-header>
+
+          <mat-card-content>
+            <div class="order-summary">
+              <div class="summary-item">
+                <span class="label">Total:</span>
+                <span class="value">{{ order.totalAmount | currency }}</span>
+              </div>
+            </div>
+
+            <mat-accordion>
+              <mat-expansion-panel class="items-panel" elevation="0">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Ver detalles ({{ order.items.length }} artículos)
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="items-list">
+                  @for (item of order.items; track item.productId) {
+                    <div class="order-item">
+                      <div class="item-info">
+                        <span class="item-name">{{ item.productName }}</span>
+                        <span class="item-qty">x{{ item.quantity }}</span>
+                      </div>
+                      <span class="item-price">{{ item.subtotal | currency }}</span>
+                    </div>
+                    <mat-divider></mat-divider>
+                  }
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
