@@ -66,6 +66,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/resellers/register").permitAll() // <-- AGREGÁ ESTA LÍNEA
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN") // <-- Asegurate de tener esta línea
                                 .requestMatchers("/api/payments/webhook/**").permitAll()
                                 .anyRequest().authenticated()
