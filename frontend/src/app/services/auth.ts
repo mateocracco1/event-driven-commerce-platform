@@ -7,7 +7,7 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = '/api/auth';
 
   // Guardamos el estado en memoria
   private authenticated = false;
