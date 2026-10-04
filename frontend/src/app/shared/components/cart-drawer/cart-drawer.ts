@@ -11,12 +11,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 
-// Ajustá la cantidad de '../' según la ubicación exacta del archivo
-import { CartService } from '../../services/cart.service';
-import { OrderService } from '../../services/order.service';
+import { CartService } from '../../../services/cart.service';
+import { OrderService } from '../../../services/order.service';
 
 @Component({
-  selector: 'app-cart',
+  selector: 'app-cart-drawer',
   standalone: true,
   imports: [
     CommonModule,
@@ -29,16 +28,19 @@ import { OrderService } from '../../services/order.service';
     MatListModule,
     MatDividerModule
   ],
-  // Verificá si en tu disco tienen o no '.component.' en el nombre
-  templateUrl: './cart.component.html',
-  styleUrl: './cart.component.scss'
+  templateUrl: './cart-drawer.html',
+  styleUrl: './cart-drawer.scss'
 })
-export class CartComponent {
+export class CartDrawerComponent {
   public cartService = inject(CartService);
   private orderService = inject(OrderService);
   private snackBar = inject(MatSnackBar);
 
   isProcessing = signal(false);
+
+  closeDrawer() {
+    this.cartService.close();
+  }
 
   removeItem(productId: number): void {
     if (productId) {

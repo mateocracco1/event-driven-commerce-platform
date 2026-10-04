@@ -21,7 +21,6 @@ export const routes: Routes = [
     // Aquí luego pondremos el adminGuard para seguridad
   },
   { path: 'home', component: HomeComponent },
-  { path: 'cart', loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent) },
   { path: 'register', component: RegisterComponent },
   { path: 'reseller-register', component: ResellerRegisterComponet },
   { path: 'forgot-password', component: ForgotPasswordComponent },

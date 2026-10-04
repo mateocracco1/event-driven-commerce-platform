@@ -6,7 +6,8 @@
 <!-- El outlet es sagrado, aquí se carga TODO (Home o AdminLayout) -->
 <router-outlet></router-outlet>
 
-<!-- Lo mismo para el drawer del perfil -->
+<!-- Lo mismo para el drawer del perfil y carrito -->
 @if (!router.url.includes('/admin')) {
   <app-profile-drawer></app-profile-drawer>
+  <app-cart-drawer></app-cart-drawer>
 }

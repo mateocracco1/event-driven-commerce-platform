@@ -33,9 +33,9 @@ public class MercadoPagoPreferenceService {
                 .toList();
 
         PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                .success("https://tu-frontend.com/checkout/success")
-                .pending("https://tu-frontend.com/checkout/pending")
-                .failure("https://tu-frontend.com/checkout/failure")
+                .success("http://localhost:4200/checkout/success")
+                .pending("http://localhost:4200/checkout/pending")
+                .failure("http://localhost:4200/checkout/failure")
                 .build();
 
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()

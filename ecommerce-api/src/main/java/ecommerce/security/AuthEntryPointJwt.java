@@ -20,6 +20,11 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
         logger.error("Error de no autorizado: {}", authException.getMessage());
+        // Esto te dirá exactamente QUÉ URL y QUÉ MÉTODO causó el 401:
+        logger.error("401 NO AUTORIZADO en [{} {}]: {}",
+                request.getMethod(),
+                request.getRequestURI(),
+                authException.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: No autorizado");
     }
 }
