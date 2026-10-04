@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +85,29 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + id));
         return orderMapper.toResponse(order);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getMyOrders(Long customerId) {
+        return orderRepository.findByCustomerId(customerId).stream()
+                .map(orderMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .map(orderMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public OrderResponse updateOrderStatus(Long id, ecommerce.features.order.dto.UpdateOrderStatusRequest request) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + id));
+        order.setStatus(request.status());
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toResponse(savedOrder);
     }
 
     private String generateOrderNumber() {

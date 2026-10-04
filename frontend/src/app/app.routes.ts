@@ -26,6 +26,12 @@ export const routes: Routes = [
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
 
+  // ── Mis Órdenes ──────────────────────────
+  {
+    path: 'my-orders',
+    loadComponent: () => import('./features/my-orders/my-orders').then(m => m.MyOrdersComponent)
+  },
+
   // ── Páginas de feedback de Mercado Pago ──────────────────────────
   {
     path: 'checkout/success',
