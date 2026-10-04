@@ -43,14 +43,18 @@ public class MercadoPagoPreferenceService {
                 .externalReference(order.getId().toString())
                 .notificationUrl(webhookUrl)
                 .backUrls(backUrls)
-                .autoReturn("approved")
                 .build();
 
         try {
             Preference preference = client.create(preferenceRequest);
+
             // Retorna init_point (o sandboxInitPoint si estás en pruebas)
             return preference.getSandboxInitPoint();
         } catch (MPException | MPApiException e) {
+            System.out.println("ERROR DE MERCADO PAGO: " + e.getMessage());
+            if (e instanceof MPApiException) {
+                System.out.println("DETALLE: " + ((MPApiException) e).getApiResponse().getContent());
+            }
             throw new RuntimeException("Error al comunicarse con Mercado Pago", e);
         }
     }
