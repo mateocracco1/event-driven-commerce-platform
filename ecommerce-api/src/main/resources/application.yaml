@@ -26,6 +26,15 @@ spring:
           starttls:
             enable: true
             required: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+mercadopago:
+  access-token: ${MP_ACCESS_TOKEN}
+  webhook-url: ${MP_WEBHOOK_URL}
 
 ecommerce:
   app:

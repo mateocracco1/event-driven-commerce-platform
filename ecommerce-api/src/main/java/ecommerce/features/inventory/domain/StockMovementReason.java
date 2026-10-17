@@ -4,6 +4,7 @@ public enum StockMovementReason {
 
 
     // Manuales (Admin)
+    PURCHASE,
     MANUAL_ADJUSTMENT,
     DAMAGED_GOODS,
     SUPPLIER_REFRESH,

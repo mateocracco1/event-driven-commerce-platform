@@ -9,10 +9,10 @@ import { HttpParams } from '@angular/common/http';
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/users';
-  private productApiUrl = 'http://localhost:8080/api/products'; 
-  private categoryApiUrl = 'http://localhost:8080/api/categories';
-  private inventoryApiUrl = 'http://localhost:8080/api/inventory';
+  private apiUrl = '/api/users';
+  private productApiUrl = '/api/products'; 
+  private categoryApiUrl = '/api/categories';
+  private inventoryApiUrl = '/api/inventory';
 
 
   // Obtener todos los usuarios (Solo para ADMIN)
@@ -77,9 +77,17 @@ export class AdminService {
     if (priceOrder) params = params.set('priceOrder', priceOrder);
 
     return this.http.get<Product[]>(`${this.productApiUrl}/search`, { params, withCredentials: true });
-}
+  }
 
+  // === GESTIÓN DE ÓRDENES ===
+  private orderApiUrl = '/api/orders';
 
+  getAllOrders(): Observable<any[]> {
+    return this.http.get<any[]>(this.orderApiUrl, { withCredentials: true });
+  }
 
+  updateOrderStatus(id: number, status: string): Observable<any> {
+    return this.http.patch<any>(`${this.orderApiUrl}/${id}/status`, { status }, { withCredentials: true });
+  }
 
 }

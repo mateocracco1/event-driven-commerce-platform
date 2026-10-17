@@ -25,6 +25,27 @@ export const routes: Routes = [
   { path: 'reseller-register', component: ResellerRegisterComponet },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
+
+  // ── Mis Órdenes ──────────────────────────
+  {
+    path: 'my-orders',
+    loadComponent: () => import('./features/my-orders/my-orders').then(m => m.MyOrdersComponent)
+  },
+
+  // ── Páginas de feedback de Mercado Pago ──────────────────────────
+  {
+    path: 'checkout/success',
+    loadComponent: () => import('./features/checkout/success/checkout-success').then(m => m.CheckoutSuccessComponent)
+  },
+  {
+    path: 'checkout/failure',
+    loadComponent: () => import('./features/checkout/failure/checkout-failure').then(m => m.CheckoutFailureComponent)
+  },
+  {
+    path: 'checkout/pending',
+    loadComponent: () => import('./features/checkout/pending/checkout-pending').then(m => m.CheckoutPendingComponent)
+  },
+
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'home' },
   

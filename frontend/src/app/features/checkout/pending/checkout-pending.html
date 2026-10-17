@@ -1,0 +1,60 @@
+<section class="feedback-wrapper pending">
+  <mat-card class="feedback-card pending-card">
+
+    <div class="icon-circle pending">
+      <mat-icon>schedule</mat-icon>
+    </div>
+
+    <mat-card-content class="card-body">
+      <h1 class="feedback-title">Pago en proceso</h1>
+      <p class="feedback-subtitle">
+        Tu pago está siendo procesado. Te avisaremos cuando se acredite.
+      </p>
+
+      @if (orderId) {
+        <div class="detail-chip">
+          <mat-icon>receipt_long</mat-icon>
+          <span>Orden #{{ orderId }}</span>
+        </div>
+      }
+
+      @if (paymentId) {
+        <div class="detail-chip secondary">
+          <mat-icon>confirmation_number</mat-icon>
+          <span>Pago #{{ paymentId }}</span>
+        </div>
+      }
+
+      <!-- Tabla de tiempos de acreditación -->
+      <div class="times-section">
+        <p class="times-title">⏱ Tiempos de acreditación estimados</p>
+        <div class="times-list">
+          @for (item of paymentTimes; track item.label) {
+            <div class="time-row">
+              <mat-icon class="time-icon">{{ item.icon }}</mat-icon>
+              <span class="time-label">{{ item.label }}</span>
+              <span class="time-value">{{ item.time }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p class="feedback-info">
+        Recibirás un email de confirmación cuando se confirme el pago. 
+        Podés revisar el estado en tu historial de órdenes.
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions">
+      <button mat-raised-button color="accent" (click)="goToMyOrders()">
+        <mat-icon>list_alt</mat-icon>
+        Ver mis órdenes
+      </button>
+      <button mat-stroked-button (click)="goToHome()">
+        <mat-icon>storefront</mat-icon>
+        Volver al inicio
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</section>

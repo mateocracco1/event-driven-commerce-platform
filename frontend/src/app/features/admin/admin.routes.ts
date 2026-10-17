@@ -24,6 +24,11 @@ export const ADMIN_ROUTES: Routes = [
       { 
       path: 'categories', 
       loadComponent: () => import('./categories/category-list/category-list').then(m => m.CategoryList) 
+      },
+      
+      { 
+        path: 'orders', 
+        loadComponent: () => import('./orders/orders').then(m => m.OrdersComponent) 
       }
     ]
   }

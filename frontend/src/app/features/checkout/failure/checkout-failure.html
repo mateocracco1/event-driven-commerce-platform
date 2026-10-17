@@ -1,0 +1,37 @@
+<section class="feedback-wrapper failure">
+  <mat-card class="feedback-card failure-card">
+
+    <div class="icon-circle failure">
+      <mat-icon>cancel</mat-icon>
+    </div>
+
+    <mat-card-content class="card-body">
+      <h1 class="feedback-title">Pago rechazado</h1>
+      <p class="feedback-subtitle">{{ errorMessage }}</p>
+
+      @if (paymentId) {
+        <div class="detail-chip">
+          <mat-icon>confirmation_number</mat-icon>
+          <span>Referencia #{{ paymentId }}</span>
+        </div>
+      }
+
+      <p class="feedback-info">
+        Tu carrito sigue guardado. Podés intentarlo nuevamente con otro 
+        medio de pago o contactar con tu banco.
+      </p>
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions">
+      <button mat-raised-button color="warn" (click)="retryCheckout()">
+        <mat-icon>replay</mat-icon>
+        Reintentar pago
+      </button>
+      <button mat-stroked-button color="warn" (click)="goToHome()">
+        <mat-icon>storefront</mat-icon>
+        Volver al catálogo
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</section>

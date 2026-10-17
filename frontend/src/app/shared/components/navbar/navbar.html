@@ -1,31 +1,49 @@
 <mat-toolbar class="mat-elevation-z4">
+
+  <!-- IZQUIERDA: Logo + Reseller -->
   <span routerLink="/home" class="brand" style="cursor: pointer">HOME</span>
-  
+
+  <button mat-button class="btn-reseller" routerLink="/reseller-register">
+    <mat-icon>storefront</mat-icon>
+    UNITE COMO REVENDEDOR
+  </button>
+
   <span class="spacer"></span>
 
+  <!-- DERECHA: Carrito + Usuario -->
   <div class="nav-actions">
-    
-    <button mat-button class="btn-reseller" routerLink="/reseller-register">
-    UNITE COMO REVENDEDOR
-      </button>
-    
+
     @if (!isLoggedIn) {
       <button mat-button class="btn-login" routerLink="/login">INICIAR SESIÓN</button>
       <button mat-flat-button class="btn-register" routerLink="/register">REGISTRARSE</button>
     } @else {
-      
+
+      <!-- 🛒 Botón carrito con badge -->
+      <button mat-icon-button class="cart-button" (click)="goToCart()" aria-label="Carrito de compras">
+        <mat-icon
+          [matBadge]="cartService.itemCount() > 0 ? cartService.itemCount() : null"
+          matBadgeColor="warn"
+          matBadgeSize="small">
+          shopping_cart
+        </mat-icon>
+      </button>
+
       <span class="user-name" (click)="profileService.open()" style="cursor: pointer">
         Hola, <strong>{{ userName }}</strong>
       </span>
-      
+
       <button mat-icon-button [matMenuTriggerFor]="menu" class="user-button">
         <mat-icon>account_circle</mat-icon>
       </button>
-      
+
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="profileService.open()">
           <mat-icon>person</mat-icon>
           <span>Mi Perfil</span>
+        </button>
+        <button mat-menu-item routerLink="/my-orders">
+          <mat-icon>receipt_long</mat-icon>
+          <span>Mis Órdenes</span>
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
@@ -35,4 +53,5 @@
       </mat-menu>
     }
   </div>
+
 </mat-toolbar>
