@@ -1,9 +1,0 @@
-**/node_modules/**
-**/.angular/**
-**/target/**
-**/dist/**
-**/.git/**
-**/.idea/**
-*.log
-*.lock
-package-lock.json
