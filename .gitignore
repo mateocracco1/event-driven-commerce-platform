@@ -1,0 +1,12 @@
+# IDEs y Editores
+.idea/
+*.iml
+.vscode/
+
+# Logs y volcados temporales
+*.log
+tatus
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
