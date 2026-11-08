@@ -1,0 +1,136 @@
+<div class="report-page">
+  <!-- Encabezado -->
+  <div class="user-list-header">
+    <div>
+      <h2>Informe Mensual de Ventas y Rendimiento</h2>
+      <span class="subtitle">(Gerencial) · {{ subtitleText() }}</span>
+    </div>
+  </div>
+
+  <!-- Barra de controles -->
+  <div class="filters-bar">
+    <select class="filter-select" [value]="month()" (change)="onMonthChange($event)" aria-label="Mes">
+      @for (m of months; track m.value) {
+        <option [value]="m.value">{{ m.label }}</option>
+      }
+    </select>
+
+    <select class="filter-select" [value]="year()" (change)="onYearChange($event)" aria-label="Año">
+      @for (y of years; track y) {
+        <option [value]="y">{{ y }}</option>
+      }
+    </select>
+
+    <mat-slide-toggle [checked]="compareEnabled()" (change)="onCompareChange($event)">
+      Comparar vs. mes anterior
+    </mat-slide-toggle>
+
+    <button mat-raised-button color="primary" type="button" (click)="downloadPdf()" [disabled]="!report()">
+      <mat-icon>picture_as_pdf</mat-icon> Descargar PDF
+    </button>
+  </div>
+
+  <!-- Estados -->
+  @if (loading()) {
+    <div class="state-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Cargando informe...</span>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  } @else if (report(); as r) {
+    <div id="report-export" class="report-export">
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <mat-card class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Ingresos Totales</span>
+            <mat-icon
+              class="kpi-info"
+              matTooltip="Sumatoria del monto total de todas las órdenes con pago aprobado en el mes"
+              >info</mat-icon
+            >
+          </div>
+          <div class="kpi-value">{{ formatMoney(r.ingresosTotales.valorActual) }}</div>
+          @if (compareEnabled()) {
+            <div class="kpi-variation" [class]="variationInfo(r.ingresosTotales).cssClass">
+              @if (variationInfo(r.ingresosTotales).icon) {
+                <mat-icon>{{ variationInfo(r.ingresosTotales).icon }}</mat-icon>
+              }
+              <span>{{ variationInfo(r.ingresosTotales).label }}</span>
+            </div>
+          }
+        </mat-card>
+
+        <mat-card class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Órdenes Exitosas</span>
+            <mat-icon
+              class="kpi-info"
+              matTooltip="Cantidad total de órdenes que concretaron su cobro en el período"
+              >info</mat-icon
+            >
+          </div>
+          <div class="kpi-value">{{ formatCount(r.ordenesExitosas.valorActual) }}</div>
+          @if (compareEnabled()) {
+            <div class="kpi-variation" [class]="variationInfo(r.ordenesExitosas).cssClass">
+              @if (variationInfo(r.ordenesExitosas).icon) {
+                <mat-icon>{{ variationInfo(r.ordenesExitosas).icon }}</mat-icon>
+              }
+              <span>{{ variationInfo(r.ordenesExitosas).label }}</span>
+            </div>
+          }
+        </mat-card>
+
+        <mat-card class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Ticket Promedio</span>
+            <mat-icon class="kpi-info" matTooltip="Ingresos Totales / Órdenes Exitosas">info</mat-icon>
+          </div>
+          <div class="kpi-value">{{ formatMoney(r.ticketPromedio.valorActual) }}</div>
+          @if (compareEnabled()) {
+            <div class="kpi-variation" [class]="variationInfo(r.ticketPromedio).cssClass">
+              @if (variationInfo(r.ticketPromedio).icon) {
+                <mat-icon>{{ variationInfo(r.ticketPromedio).icon }}</mat-icon>
+              }
+              <span>{{ variationInfo(r.ticketPromedio).label }}</span>
+            </div>
+          }
+        </mat-card>
+
+        <mat-card class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">Aprobación de Pagos</span>
+            <mat-icon
+              class="kpi-info"
+              matTooltip="Porcentaje de órdenes aprobadas sobre el total de órdenes iniciadas"
+              >info</mat-icon
+            >
+          </div>
+          <div class="kpi-value">{{ formatPercent(r.tasaAprobacionPagos.valorActual) }}</div>
+          @if (compareEnabled()) {
+            <div class="kpi-variation" [class]="variationInfo(r.tasaAprobacionPagos).cssClass">
+              @if (variationInfo(r.tasaAprobacionPagos).icon) {
+                <mat-icon>{{ variationInfo(r.tasaAprobacionPagos).icon }}</mat-icon>
+              }
+              <span>{{ variationInfo(r.tasaAprobacionPagos).label }}</span>
+            </div>
+          }
+        </mat-card>
+      </div>
+
+      <!-- Tendencia -->
+      <div class="trend-section">
+        <h3>Tendencia de Ventas Diarias</h3>
+
+        @if (r.sinDatos) {
+          <div class="alert alert-warning">{{ r.mensaje }}</div>
+        } @else {
+          <div class="chart-wrapper">
+            <canvas #chartCanvas></canvas>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

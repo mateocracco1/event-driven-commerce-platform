@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileDrawer } from './profile-drawer';
+import { ProfileDrawerComponent } from './profile-drawer';
 
-describe('ProfileDrawer', () => {
-  let component: ProfileDrawer;
-  let fixture: ComponentFixture<ProfileDrawer>;
+describe('ProfileDrawerComponent', () => {
+  let component: ProfileDrawerComponent;
+  let fixture: ComponentFixture<ProfileDrawerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProfileDrawer],
+      imports: [ProfileDrawerComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProfileDrawer);
+    fixture = TestBed.createComponent(ProfileDrawerComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
