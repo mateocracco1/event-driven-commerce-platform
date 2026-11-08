@@ -1,6 +1,7 @@
 package ecommerce.features.order.service;
 
 import ecommerce.core.domain.Product;
+import ecommerce.features.order.OrderSpecification;
 import ecommerce.features.order.domain.Order;
 import ecommerce.features.order.domain.OrderItem;
 import ecommerce.features.order.domain.OrderStatus;
@@ -9,13 +10,20 @@ import ecommerce.features.order.dto.OrderItemRequest;
 import ecommerce.features.order.dto.OrderResponse;
 import ecommerce.features.order.mapper.OrderMapper;
 import ecommerce.features.order.repository.OrderRepository;
+import ecommerce.features.payment.domain.Payment;
+import ecommerce.features.payment.domain.PaymentStatus;
 import ecommerce.features.payment.infrastructure.mercadopago.MercadoPagoPreferenceService;
+import ecommerce.features.payment.repository.PaymentRepository;
 import ecommerce.features.products.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -28,6 +36,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderMapper orderMapper;
+    private final PaymentRepository paymentRepository;
 
     private final MercadoPagoPreferenceService mercadoPagoPreferenceService;
 
@@ -78,27 +87,28 @@ public class OrderService {
         // 6. Generar la Preference en Mercado Pago con el order.id generado
         String paymentUrl = mercadoPagoPreferenceService.createPaymentPreference(savedOrder);
 
-        return orderMapper.toResponse(savedOrder, paymentUrl);    }
+        return orderMapper.toResponse(savedOrder, paymentUrl, resolvePaymentStatus(savedOrder));    }
 
     @Transactional(readOnly = true)
     public OrderResponse getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + id));
-        return orderMapper.toResponse(order);
+        return mapToResponse(order, null);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> getMyOrders(Long customerId) {
         return orderRepository.findByCustomerId(customerId).stream()
-                .map(orderMapper::toResponse)
+                .map(order -> mapToResponse(order, null))
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<OrderResponse> getAllOrders() {
-        return orderRepository.findAll().stream()
-                .map(orderMapper::toResponse)
-                .toList();
+    public Page<OrderResponse> getAllOrders(String search, OrderStatus status, String paymentStatus,
+                                            LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Specification<Order> spec = OrderSpecification.build(search, status, paymentStatus, startDate, endDate);
+        Page<Order> orders = orderRepository.findAll(spec, pageable);
+        return orders.map(order -> mapToResponse(order, null));
     }
 
     @Transactional
@@ -107,7 +117,27 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Orden no encontrada con ID: " + id));
         order.setStatus(request.status());
         Order savedOrder = orderRepository.save(order);
-        return orderMapper.toResponse(savedOrder);
+        return mapToResponse(savedOrder, null);
+    }
+
+    private OrderResponse mapToResponse(Order order, String paymentUrl) {
+        return orderMapper.toResponse(order, paymentUrl, resolvePaymentStatus(order));
+    }
+
+    private String resolvePaymentStatus(Order order) {
+        List<Payment> payments = paymentRepository.findLatestByOrderId(order.getId());
+        if (!payments.isEmpty()) {
+            return switch (payments.get(0).getStatus()) {
+                case APPROVED -> "APPROVED";
+                case PENDING -> "PENDING";
+                case REJECTED, REFUNDED -> "REJECTED";
+            };
+        }
+        return switch (order.getStatus()) {
+            case PAID, PROCESSING, DELIVERED -> "APPROVED";
+            case CANCELLED -> "REJECTED";
+            case PENDING_PAYMENT -> "PENDING";
+        };
     }
 
     private String generateOrderNumber() {

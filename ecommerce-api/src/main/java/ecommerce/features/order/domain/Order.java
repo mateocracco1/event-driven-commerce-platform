@@ -1,5 +1,6 @@
 package ecommerce.features.order.domain;
 
+import ecommerce.core.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -30,8 +31,12 @@ public class Order {
     @Column(nullable = false, length = 30)
     private OrderStatus status;
 
-    @Column(nullable = false)
+    @Column(name = "customer_id", nullable = false)
     private Long customerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    private User customer;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product, Category } from '../../../core/models/product.model';
+import { Order, OrderListParams, PageResponse } from '../../../core/models/order.model';
 import { HttpParams } from '@angular/common/http'; 
 
 @Injectable({
@@ -82,8 +83,20 @@ export class AdminService {
   // === GESTIÓN DE ÓRDENES ===
   private orderApiUrl = '/api/orders';
 
-  getAllOrders(): Observable<any[]> {
-    return this.http.get<any[]>(this.orderApiUrl, { withCredentials: true });
+  getAllOrders(params: OrderListParams = {}): Observable<PageResponse<Order>> {
+    let httpParams = new HttpParams();
+
+    const entries = Object.entries(params) as [keyof OrderListParams, any][];
+    for (const [key, value] of entries) {
+      if (value !== undefined && value !== null && value !== '') {
+        httpParams = httpParams.set(key, String(value));
+      }
+    }
+
+    return this.http.get<PageResponse<Order>>(this.orderApiUrl, {
+      params: httpParams,
+      withCredentials: true,
+    });
   }
 
   updateOrderStatus(id: number, status: string): Observable<any> {
