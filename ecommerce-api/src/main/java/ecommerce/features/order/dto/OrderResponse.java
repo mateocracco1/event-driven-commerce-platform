@@ -14,5 +14,8 @@ public record OrderResponse(
         BigDecimal totalAmount,
         List<OrderItemResponse> items,
         LocalDateTime createdAt,
-        String paymentUrl
+        String paymentUrl,
+        String customerName,
+        String customerEmail,
+        String paymentStatus
 ) {}

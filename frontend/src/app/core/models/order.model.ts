@@ -7,7 +7,9 @@
  * Estados posibles de una orden a lo largo de su ciclo de vida.
  * Definidos por el backend (Spring Boot).
  */
-export type OrderStatus = 'PENDING_PAYMENT' | 'PAID' | 'CANCELLED' | 'DELIVERED';
+export type OrderStatus = 'PENDING_PAYMENT' | 'PAID' | 'PROCESSING' | 'CANCELLED' | 'DELIVERED';
+
+export type PaymentStatus = 'APPROVED' | 'PENDING' | 'REJECTED';
 
 // ------------------------------------------------------------
 // Ítem dentro de una orden (para lectura/detalle)
@@ -25,7 +27,9 @@ export interface OrderItem {
 // ------------------------------------------------------------
 export interface Order {
   id: number;
+  orderNumber?: string;
   status: OrderStatus;
+  customerId?: number;
   totalAmount: number;
   createdAt: string;   // ISO 8601 string, ej: "2026-10-03T18:00:00"
   updatedAt?: string;
@@ -33,6 +37,7 @@ export interface Order {
   // Datos del cliente (útil en la vista Admin)
   customerName?: string;
   customerEmail?: string;
+  paymentStatus?: PaymentStatus;
 }
 
 // ------------------------------------------------------------
@@ -55,6 +60,33 @@ export interface CheckoutResponse {
   paymentUrl: string;   // URL de Mercado Pago → usamos window.location.href
   status: OrderStatus;
   totalAmount: number;
+}
+
+// ------------------------------------------------------------
+// Respuesta paginada de Spring Data (Page<T>)
+// ------------------------------------------------------------
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number; // página actual (0-indexed)
+  first: boolean;
+  last: boolean;
+}
+
+// ------------------------------------------------------------
+// Parámetros de filtrado/paginación para GET /api/orders
+// ------------------------------------------------------------
+export interface OrderListParams {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+  status?: OrderStatus;
+  paymentStatus?: PaymentStatus;
+  startDate?: string;
+  endDate?: string;
 }
 
 // ------------------------------------------------------------

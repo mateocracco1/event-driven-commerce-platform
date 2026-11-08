@@ -2,54 +2,121 @@
   <h2>Gestión de Órdenes</h2>
 </div>
 
+<!-- Barra de filtros -->
+<div class="filters-bar">
+  <div class="filter-field search-field">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Buscar por nombre, email, N° orden o ID"
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onFilterChange()"
+    />
+  </div>
+
+  <select class="filter-select" [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+    <option value="">Estado pedido: Todos</option>
+    @for (status of orderStatuses; track status) {
+      <option [value]="status">{{ getStatusLabel(status) }}</option>
+    }
+  </select>
+
+  <select class="filter-select" [(ngModel)]="selectedPaymentStatus" (change)="onFilterChange()">
+    <option value="">Estado pago: Todos</option>
+    @for (status of paymentStatuses; track status) {
+      <option [value]="status">{{ getPaymentStatusLabel(status) }}</option>
+    }
+  </select>
+
+  <input type="date" class="filter-select" [(ngModel)]="startDate" (change)="onFilterChange()" title="Desde" />
+  <input type="date" class="filter-select" [(ngModel)]="endDate" (change)="onFilterChange()" title="Hasta" />
+
+  <select class="filter-select" [(ngModel)]="sort" (change)="onFilterChange()">
+    <option value="createdAt,desc">Más recientes</option>
+    <option value="createdAt,asc">Más antiguos</option>
+    <option value="totalAmount,desc">Monto mayor</option>
+    <option value="totalAmount,asc">Monto menor</option>
+  </select>
+
+  <button class="btn-clear" type="button" (click)="clearFilters()">Limpiar</button>
+</div>
+
 <div class="table-container">
   <table class="admin-table">
     <thead>
       <tr>
-        <th>N° Orden</th>
-        <th>Fecha</th>
+        <th>ID</th>
         <th>Cliente</th>
-        <th>Total</th>
-        <th>Estado Actual</th>
-        <th>Cambiar Estado</th>
+        <th>Estado Pedido</th>
+        <th>Monto</th>
+        <th>Estado Pago</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      @for (order of orders(); track order.id) {
+      @if (loading) {
         <tr>
+          <td colspan="7" class="empty-message">Cargando órdenes...</td>
+        </tr>
+      } @else {
+        @for (order of orders; track order.id) {
+          <tr>
             <td><strong>#{{ order.id }}</strong></td>
-            <td>{{ order.createdAt | date:'medium' }}</td>
-            <td>{{ order.customerName || 'Cliente ' + order.customerId }}</td>
-            <td>${{ order.totalAmount }}</td>
             <td>
-              <span class="status-badge" [ngClass]="'status-' + order.status.toLowerCase()">
-                {{ getStatusLabel(order.status) }}
+              <div class="customer-cell">
+                <span class="customer-name">{{ order.customerName || 'Cliente ' + order.customerId }}</span>
+                @if (order.customerEmail) {
+                  <span class="customer-email">{{ order.customerEmail }}</span>
+                }
+              </div>
+            </td>
+            <td>
+              <span class="status-badge">
+                {{ getOrderStatusLabel(order.status) }}
               </span>
             </td>
-            <td class="actions">
-               <select class="status-select" 
-                       [value]="order.status" 
-                       (change)="updateStatus(order.id, $event)"
-                       [disabled]="order.status === 'DELIVERED' || order.status === 'CANCELLED'">
-                 
-                 <!-- PENDING_PAYMENT y PAID solo se muestran si es el estado actual, pero no se pueden elegir manualmente -->
-                 <option value="PENDING_PAYMENT" [disabled]="order.status !== 'PENDING_PAYMENT'">Pendiente de Pago</option>
-                 <option value="PAID" [disabled]="order.status !== 'PAID'">Pagado (Automático)</option>
-                 
-                 <!-- Estados manuales para el Admin -->
-                 <option value="PROCESSING">En Proceso (Preparando)</option>
-                 <option value="DELIVERED">Enviado / Entregado</option>
-                 <option value="CANCELLED">Cancelado</option>
-               </select>
+            <td>{{ order.totalAmount | currency:'ARS':'symbol':'1.2-2' }}</td>
+            <td>
+              <span class="payment-status" [ngClass]="'payment-' + (order.paymentStatus || 'undefined').toLowerCase()">
+                <span class="payment-dot"></span>
+                {{ getPaymentStatusLabel(order.paymentStatus) }}
+              </span>
             </td>
-        </tr>
-      } @empty {
-        <tr>
-          <td colspan="6" class="empty-message">
-            No se encontraron órdenes.
-          </td>
-        </tr>
+            <td>{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td class="actions">
+              <select class="status-select"
+                      [value]="order.status"
+                      (change)="updateStatus(order.id, $event)"
+                      [disabled]="order.status === 'DELIVERED' || order.status === 'CANCELLED'">
+
+                <option value="PENDING_PAYMENT" [disabled]="order.status !== 'PENDING_PAYMENT'">Pendiente de Pago</option>
+                <option value="PAID" [disabled]="order.status !== 'PAID'">Pagado (Automático)</option>
+
+                <option value="PROCESSING">En Proceso (Preparando)</option>
+                <option value="DELIVERED">Enviado / Entregado</option>
+                <option value="CANCELLED">Cancelado</option>
+              </select>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-message">No se encontraron órdenes.</td>
+          </tr>
+        }
       }
     </tbody>
   </table>
+
+  <!-- Paginación -->
+  <div class="pagination-bar">
+    <span class="pagination-info">
+      Mostrando {{ startIndex }} - {{ endIndex }} de {{ totalElements }} registros
+    </span>
+    <div class="pagination-actions">
+      <button class="btn-page" type="button" [disabled]="isFirst" (click)="prevPage()">‹ Anterior</button>
+      <span class="pagination-page">Página {{ currentPage + 1 }} de {{ totalPages || 1 }}</span>
+      <button class="btn-page" type="button" [disabled]="isLast" (click)="nextPage()">Siguiente ›</button>
+    </div>
+  </div>
 </div>

@@ -1,8 +1,6 @@
 package ecommerce.features.order.mapper;
 
 import ecommerce.features.order.domain.Order;
-import ecommerce.features.order.domain.OrderItem;
-import ecommerce.features.order.dto.OrderItemResponse;
 import ecommerce.features.order.dto.OrderResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,10 +10,9 @@ import org.mapstruct.MappingConstants;
 public interface OrderMapper {
 
     @Mapping(target = "paymentUrl", source = "paymentUrl")
-    OrderResponse toResponse(Order order, String paymentUrl);
-
-    default OrderResponse toResponse(Order order) {
-        return toResponse(order, null);
-    }
+    @Mapping(target = "customerName", source = "order.customer.name")
+    @Mapping(target = "customerEmail", source = "order.customer.email")
+    @Mapping(target = "paymentStatus", source = "paymentStatus")
+    OrderResponse toResponse(Order order, String paymentUrl, String paymentStatus);
 
 }

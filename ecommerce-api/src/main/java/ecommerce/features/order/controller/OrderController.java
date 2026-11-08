@@ -1,16 +1,23 @@
 package ecommerce.features.order.controller;
 
 
+import ecommerce.features.order.domain.OrderStatus;
 import ecommerce.features.order.dto.CheckoutRequest;
 import ecommerce.features.order.dto.OrderResponse;
 import ecommerce.features.order.service.OrderService;
 import ecommerce.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -46,8 +53,15 @@ public class OrderController {
 
     @GetMapping
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<OrderResponse>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
+    public ResponseEntity<Page<OrderResponse>> getAllOrders(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String paymentStatus,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(orderService.getAllOrders(search, status, paymentStatus, startDate, endDate, pageable));
     }
 
     @PatchMapping("/{id}/status")
